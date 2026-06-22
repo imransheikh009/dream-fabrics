@@ -693,6 +693,7 @@ async function initFirebase(cfg, isInitialLoad){
         data = val;
         if(!data.calendarNotes) data.calendarNotes = {};
         if(!data.bazars) data.bazars = [];
+        data.bazars.forEach(b => { if(!b.shops) b.shops = []; });
         try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch(e){}
         render();
       } else if(!isInitialLoad){
@@ -1354,6 +1355,8 @@ function render(){
   const container = document.getElementById('bazarContainer');
   const empty = document.getElementById('emptyState');
 
+  // Ensure all bazars have shops array
+  data.bazars.forEach(b => { if(!b.shops) b.shops = []; });
   let totalShops = 0;
   data.bazars.forEach(b => totalShops += b.shops.length);
   document.getElementById('totalCount').textContent =
