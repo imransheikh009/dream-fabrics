@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Fabrics — দোকান তালিকা</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<style>
+  :root{
+    --bg:#0d0f14;
+    --panel:#15181f;
+    --panel2:#1b1f29;
+    --line:#272c38;
+    --gold:#c9a84c;
+    --green:#4ecb71;
+    --red:#e05252;
+    --cream:#e8e4d8;
+    --muted:#8a8f9c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Noto Sans Bengali','DM Mono',monospace;
+    min-height:100vh;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:20px 16px 80px;}
+
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+  .header-left{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  header h1{font-size:19px;margin:0;color:var(--gold);letter-spacing:.3px;font-weight:700;}
+  header .count{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);}
+
+  .lang-toggle{
+    display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex-shrink:0;
+  }
+  .lang-toggle button{
+    background:var(--panel);border:none;color:var(--muted);font-size:12px;font-weight:700;
+    padding:7px 12px;cursor:pointer;font-family:inherit;
+  }
+  .lang-toggle button.active{background:var(--gold);color:#15120a;}
+
+  .time-btn{
+    display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;
+    background:var(--panel);color:var(--cream);font-size:12px;font-weight:600;
+    padding:7px 12px;cursor:pointer;font-family:'DM Mono',monospace;flex-shrink:0;
+  }
+  .time-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+  .sync-btn{
+    display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;
+    background:var(--panel);color:var(--muted);font-size:12px;font-weight:600;
+    padding:7px 12px;cursor:pointer;font-family:'DM Mono',monospace;flex-shrink:0;
+  }
+  .sync-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .sync-btn.connected{border-color:var(--green);color:var(--green);}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+  .sync-btn.connected .sync-dot{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .sync-status-msg{font-size:12.5px;color:var(--green);margin:0 0 14px;display:flex;align-items:center;gap:6px;}
+  .sync-status-msg.off{color:var(--muted);}
+
+  /* calendar modal */
+  .cal-modal{padding:0;overflow:hidden;}
+  .cal-head{
+    background:linear-gradient(160deg,#1a1306,var(--bg));padding:18px 18px 14px;position:relative;
+  }
+  .cal-head .cal-close{
+    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
+    background:rgba(255,255,255,.08);border:none;color:var(--cream);font-size:15px;cursor:pointer;
+  }
+  .cal-head h3{margin:0 0 8px;color:var(--gold);font-size:19px;font-weight:700;}
+  .cal-sub{font-size:12.5px;color:var(--muted);margin:3px 0;display:flex;align-items:center;gap:6px;}
+
+  .cal-tabs{display:flex;border-bottom:1px solid var(--line);}
+  .cal-tab{
+    flex:1;text-align:center;padding:11px 6px;font-size:13px;font-weight:700;cursor:pointer;
+    background:var(--panel2);color:var(--muted);border:none;font-family:inherit;
+    display:flex;align-items:center;justify-content:center;gap:5px;
+  }
+  .cal-tab.active{background:var(--gold);color:#15120a;}
+
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 6px;}
+  .cal-nav button{
+    width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);
+    color:var(--cream);cursor:pointer;font-size:14px;
+  }
+  .cal-nav button:hover{border-color:var(--gold);color:var(--gold);}
+  .cal-nav .cal-month-label{font-size:15px;font-weight:700;color:var(--cream);}
+
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:6px 14px 0;}
+  .cal-weekdays span{text-align:center;font-size:11px;color:var(--muted);padding:6px 0;}
+  .cal-weekdays span.fri{color:var(--green);}
+
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);padding:0 14px 18px;gap:4px;}
+  .cal-cell{
+    aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;
+    border-radius:9px;color:var(--cream);
+  }
+  .cal-cell.empty{visibility:hidden;}
+  .cal-cell.fri{color:var(--green);}
+  .cal-cell.today{background:var(--gold);color:#15120a;font-weight:700;}
+  .cal-cell{cursor:pointer;position:relative;}
+  .cal-cell.has-note::after{content:'•';position:absolute;bottom:2px;right:5px;color:var(--gold);font-size:16px;}
+
+  .backup-row{display:flex;gap:8px;margin-bottom:16px;}
+  .backup-btn{
+    flex:1;background:var(--panel);border:1px solid var(--line);color:var(--muted);
+    padding:9px 10px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+  .backup-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--panel2);}
+
+  .searchbar{
+    display:flex;gap:8px;margin-bottom:16px;
+  }
+  .searchbar input{
+    flex:1;background:var(--panel);border:1px solid var(--line);color:var(--cream);
+    padding:11px 14px;border-radius:10px;font-size:14px;font-family:inherit;
+  }
+  .searchbar input:focus{outline:none;border-color:var(--gold);}
+
+  .add-bazar-btn{
+    width:100%;background:var(--panel);border:1px dashed var(--line);color:var(--gold);
+    padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:18px;
+    font-family:inherit;
+  }
+  .add-bazar-btn:hover{border-color:var(--gold);background:var(--panel2);}
+
+  .bazar{
+    margin-bottom:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;
+  }
+  .bazar-head{
+    display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;
+  }
+  .bazar-head:hover{background:var(--panel2);}
+  .bazar-title{display:flex;align-items:center;gap:10px;}
+  .bazar-name{font-size:15px;font-weight:700;color:var(--cream);}
+  .bazar-badge{
+    font-family:'DM Mono',monospace;font-size:11px;color:var(--bg);background:var(--gold);
+    padding:2px 8px;border-radius:20px;font-weight:600;
+  }
+  .chev{color:var(--muted);font-size:13px;transition:transform .2s;}
+  .bazar.open .chev{transform:rotate(90deg);}
+
+  .bazar-actions{display:flex;gap:6px;}
+  .icon-btn{
+    background:transparent;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:4px 6px;border-radius:6px;
+  }
+  .icon-btn:hover{color:var(--red);background:#2a1c1c;}
+
+  .shop-list{display:none;border-top:1px solid var(--line);}
+  .bazar.open .shop-list{display:block;}
+
+  .shop{
+    display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);gap:10px;
+  }
+  .shop:last-child{border-bottom:none;}
+  .shop-info{min-width:0;}
+  .shop-name{font-size:14px;font-weight:600;color:var(--cream);}
+  .shop-owner{font-size:12px;color:var(--muted);margin-top:2px;}
+  .shop-phone{font-family:'DM Mono',monospace;font-size:12.5px;color:var(--green);margin-top:3px;}
+  .shop-date{font-size:11.5px;color:var(--gold);margin-top:4px;}
+  .shop-note{font-size:12px;color:var(--cream);margin-top:5px;font-style:italic;opacity:.85;line-height:1.4;}
+  .shop-added{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);margin-top:2px;}
+
+  .shop-actions{display:flex;gap:6px;flex-shrink:0;}
+  .pill-btn{
+    border:1px solid var(--line);background:var(--panel2);color:var(--cream);
+    width:34px;height:34px;border-radius:9px;font-size:15px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;text-decoration:none;
+  }
+  .pill-btn.call:hover{border-color:var(--green);color:var(--green);}
+  .pill-btn.wa:hover{border-color:var(--green);color:var(--green);}
+  .pill-btn.edit:hover{border-color:var(--gold);color:var(--gold);}
+  .pill-btn.del:hover{border-color:var(--red);color:var(--red);}
+
+  .add-shop-row{padding:10px 16px 14px;}
+  .add-shop-btn{
+    width:100%;background:transparent;border:1px dashed var(--line);color:var(--gold);
+    padding:9px;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;
+  }
+  .add-shop-btn:hover{background:var(--panel2);}
+
+  .empty{
+    text-align:center;color:var(--muted);padding:40px 20px;font-size:14px;line-height:1.7;
+  }
+  .empty b{color:var(--gold);}
+
+  /* modal */
+  .overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:50;
+    padding:12px;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    width:100%;max-width:480px;background:var(--panel);border:1px solid var(--line);
+    border-radius:18px 18px 0 0;padding:20px 18px 26px;
+    animation:up .18s ease-out;
+    max-height:85vh;overflow-y:auto;
+  }
+  @media(min-width:560px){
+    .overlay{align-items:center;}
+    .modal{border-radius:16px;max-height:80vh;}
+  }
+  @keyframes up{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .modal h3{margin:0 0 14px;color:var(--gold);font-size:16px;}
+  .modal p.confirm-msg{font-size:14px;color:var(--cream);line-height:1.6;margin:0 0 18px;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;}
+  .field input{
+    width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--cream);
+    padding:11px 12px;border-radius:9px;font-size:14px;font-family:inherit;
+  }
+  .field input:focus{outline:none;border-color:var(--gold);}
+  .field textarea{
+    width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--cream);
+    padding:11px 12px;border-radius:9px;font-size:14px;font-family:inherit;resize:vertical;min-height:280px;
+  }
+  .field textarea:focus{outline:none;border-color:var(--gold);}
+  .pill-btn.note.has-note{border-color:var(--gold);color:var(--gold);}
+  .modal-actions{display:flex;gap:10px;margin-top:16px;}
+  .btn{
+    flex:1;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+  }
+  .btn.primary{background:var(--gold);color:#15120a;}
+  .btn.primary:hover{opacity:.9;}
+  .btn.danger{background:var(--red);color:#fff;}
+  .btn.danger:hover{opacity:.9;}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);}
+
+  .toast{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    background:var(--panel2);border:1px solid var(--line);color:var(--cream);
+    padding:10px 18px;border-radius:30px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;
+    pointer-events:none;
+  }
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="header-left">
+      <h1>Dream Fabrics</h1>
+      <span class="count" id="totalCount"></span>
+    </div>
+    <div class="lang-toggle">
+      <button id="langBn">বাং</button>
+      <button id="langEn">EN</button>
+    </div>
+    <button class="time-btn" id="timeBtn">🕐 <span id="timeBtnText"></span></button>
+    <button class="sync-btn" id="syncBtn"><span class="sync-dot" id="syncDot"></span><span id="syncBtnText"></span></button>
+  </header>
+
+  <div class="backup-row">
+    <button class="backup-btn" id="exportBtn"></button>
+    <button class="backup-btn" id="importBtn"></button>
+    <input type="file" id="importFile" accept=".json,application/json,text/plain" style="display:none;">
+  </div>
+
+  <div class="searchbar">
+    <input id="searchInput">
+  </div>
+
+  <button class="add-bazar-btn" id="addBazarBtn"></button>
+
+  <div id="bazarContainer"></div>
+  <div id="emptyState" class="empty" style="display:none;"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let data = { bazars: [], calendarNotes: {} };
+let openBazarId = null;
+let lang = 'en';
+
+const STORAGE_KEY = 'dream_fabrics_data';
+const LANG_KEY = 'dream_fabrics_lang';
+const FIREBASE_CONFIG_KEY = 'dream_fabrics_firebase_config';
+
+let syncEnabled = false;
+let dbRef = null;
+let suppressRemoteEcho = false;
+
+const STR = {
+  bn: {
+    title: 'দোকান তালিকা',
+    exportBtn: '⬇ ব্যাকআপ ডাউনলোড করুন',
+    importBtn: '⬆ ব্যাকআপ থেকে আনুন',
+    searchPlaceholder: 'নাম, দোকান বা নম্বর খুঁজুন...',
+    addBazarBtn: '+ নতুন বাজার যোগ করুন',
+    emptyMain: 'এখনো কোনো বাজার যোগ করা হয়নি।',
+    emptyHint: '"+ নতুন বাজার যোগ করুন" দিয়ে শুরু করুন।',
+    countLabel: (nb, ns) => `${nb} বাজার • ${ns} দোকান`,
+    noShops: 'কোনো দোকান নেই',
+    addShopBtn: '+ দোকান যোগ করুন',
+    nameNone: 'নাম নেই',
+    ownerPrefix: 'মালিক: ',
+    callTitle: 'কল করুন',
+    waTitle: 'হোয়াটসঅ্যাপ',
+    editTitle: 'পরিবর্তন',
+    deleteTitle: 'ডিলিট',
+
+    newBazarTitle: 'নতুন বাজার',
+    bazarNameLabel: 'বাজারের নাম',
+    bazarNamePh: 'যেমন: কারওয়ান বাজার',
+    cancel: 'বাতিল',
+    add: 'যোগ করুন',
+    editBazarTitle: 'বাজারের নাম পরিবর্তন',
+    save: 'সেভ করুন',
+
+    newShopTitle: 'নতুন দোকান যোগ করুন',
+    shopNameLabel: 'দোকানের নাম',
+    shopNamePh: 'যেমন: রহমান ক্লথ স্টোর',
+    ownerNameLabel: 'মালিকের নাম',
+    ownerNamePh: 'যেমন: আব্দুর রহমান',
+    phoneLabel: 'মোবাইল নম্বর',
+    visitDateLabel: 'ভিজিট তারিখ',
+    editShopTitle: 'দোকানের তথ্য পরিবর্তন',
+    visitPrefix: 'ভিজিট: ',
+    addedPrefix: 'যোগ করা হয়েছে: ',
+    noteTitle: 'নোট',
+    noteModalTitle: 'নোট লিখুন',
+    notePlaceholder: 'যেমন: কাপড় আনতে হবে, পেমেন্ট বাকি...',
+    toastNoteSaved: 'নোট সেভ হয়েছে',
+
+    confirmTitle: 'নিশ্চিত করুন',
+    confirmDeleteBazar: 'এই বাজার এবং এর সব দোকান ডিলিট হয়ে যাবে। নিশ্চিত?',
+    confirmDeleteShop: 'এই দোকানের তথ্য ডিলিট করবেন?',
+    confirmImport: 'এই ব্যাকআপ ফাইলের ডাটা এখনকার সব ডাটার সাথে যুক্ত হবে। চালিয়ে যাবেন?',
+    deleteBtn: 'ডিলিট করুন',
+    continueBtn: 'চালিয়ে যান',
+
+    toastBazarAdded: 'বাজার যোগ হয়েছে',
+    toastBazarDeleted: 'বাজার ডিলিট হয়েছে',
+    toastShopAdded: 'দোকান যোগ হয়েছে',
+    toastShopDeleted: 'দোকান ডিলিট হয়েছে',
+    toastNeedName: 'অন্তত নাম দিন',
+    toastSaveError: 'সেভ করতে সমস্যা হয়েছে',
+    toastBackupDone: 'ব্যাকআপ ডাউনলোড হয়েছে',
+    toastImportDone: 'ব্যাকআপ থেকে ডাটা যুক্ত হয়েছে',
+    toastBadFile: 'ফাইলটি সঠিক ব্যাকআপ ফাইল নয়',
+
+    syncBtnSetup: 'সিঙ্ক সেটআপ',
+    syncBtnSynced: 'সিঙ্ক চালু',
+    syncModalTitle: '☁ মাল্টি-ফোন সিঙ্ক সেটআপ',
+    syncActiveMsg: '✅ এই ফোনে সিঙ্ক চালু আছে',
+    syncInactiveMsg: 'এখনো সিঙ্ক চালু করা হয়নি — শুধু এই ফোনেই ডাটা সেভ থাকছে।',
+    syncIntro: 'সব ফোনে একই ডাটা দেখতে ও যুক্ত করতে, প্রতিটা ফোনে নিচের Firebase কনফিগ একইভাবে পেস্ট করে কানেক্ট করুন।',
+    syncFieldLabel: 'Firebase কনফিগ পেস্ট করুন',
+    syncPlaceholder: 'const firebaseConfig = {\n  apiKey: "...",\n  authDomain: "...",\n  databaseURL: "...",\n  projectId: "...",\n  ...\n};',
+    syncConnectBtn: 'কানেক্ট করুন',
+    syncDisconnectBtn: 'সিঙ্ক বন্ধ করুন',
+    toastNeedConfig: 'কনফিগ পেস্ট করুন',
+    toastBadConfig: 'কনফিগটি ঠিক নয়, আবার চেক করুন',
+    toastSyncConnecting: 'সিঙ্ক চালু হচ্ছে...',
+    toastSyncConnected: 'সিঙ্ক চালু হয়েছে ✅',
+    toastSyncFailed: 'সিঙ্ক চালু করতে সমস্যা হয়েছে, কনফিগ আবার চেক করুন',
+    toastSyncDisconnected: 'সিঙ্ক বন্ধ হয়েছে',
+  },
+  en: {
+    title: 'Shop Directory',
+    exportBtn: '⬇ Download backup',
+    importBtn: '⬆ Restore from backup',
+    searchPlaceholder: 'Search by name, shop, or number...',
+    addBazarBtn: '+ Add new market',
+    emptyMain: 'No markets added yet.',
+    emptyHint: 'Start with "+ Add new market".',
+    countLabel: (nb, ns) => `${nb} markets • ${ns} shops`,
+    noShops: 'No shops yet',
+    addShopBtn: '+ Add shop',
+    nameNone: 'No name',
+    ownerPrefix: 'Owner: ',
+    callTitle: 'Call',
+    waTitle: 'WhatsApp',
+    editTitle: 'Edit',
+    deleteTitle: 'Delete',
+
+    newBazarTitle: 'New market',
+    bazarNameLabel: 'Market name',
+    bazarNamePh: 'e.g. Karwan Bazar',
+    cancel: 'Cancel',
+    add: 'Add',
+    editBazarTitle: 'Edit market name',
+    save: 'Save',
+
+    newShopTitle: 'Add new shop',
+    shopNameLabel: 'Shop name',
+    shopNamePh: 'e.g. Rahman Cloth Store',
+    ownerNameLabel: "Owner's name",
+    ownerNamePh: 'e.g. Abdur Rahman',
+    phoneLabel: 'Mobile number',
+    visitDateLabel: 'Visit date',
+    editShopTitle: 'Edit shop details',
+    visitPrefix: 'Visited: ',
+    addedPrefix: 'Added: ',
+    noteTitle: 'Note',
+    noteModalTitle: 'Add note',
+    notePlaceholder: 'e.g. need to collect cloth, payment pending...',
+    toastNoteSaved: 'Note saved',
+
+    confirmTitle: 'Please confirm',
+    confirmDeleteBazar: 'This market and all its shops will be deleted. Are you sure?',
+    confirmDeleteShop: 'Delete this shop’s details?',
+    confirmImport: 'This backup will be merged with your current data. Continue?',
+    deleteBtn: 'Delete',
+    continueBtn: 'Continue',
+
+    toastBazarAdded: 'Market added',
+    toastBazarDeleted: 'Market deleted',
+    toastShopAdded: 'Shop added',
+    toastShopDeleted: 'Shop deleted',
+    toastNeedName: 'Please enter at least a name',
+    toastSaveError: 'Could not save',
+    toastBackupDone: 'Backup downloaded',
+    toastImportDone: 'Backup data merged in',
+    toastBadFile: 'That is not a valid backup file',
+
+    syncBtnSetup: 'Sync setup',
+    syncBtnSynced: 'Synced',
+    syncModalTitle: '☁ Multi-phone Sync Setup',
+    syncActiveMsg: '✅ Sync is active on this device',
+    syncInactiveMsg: 'Sync is not set up yet — data is only saved on this phone.',
+    syncIntro: 'To see and add data on every phone, paste the same Firebase config below on each phone and connect.',
+    syncFieldLabel: 'Paste your Firebase config',
+    syncPlaceholder: 'const firebaseConfig = {\n  apiKey: "...",\n  authDomain: "...",\n  databaseURL: "...",\n  projectId: "...",\n  ...\n};',
+    syncConnectBtn: 'Connect',
+    syncDisconnectBtn: 'Disconnect sync',
+    toastNeedConfig: 'Please paste the config',
+    toastBadConfig: 'That config looks invalid, please check it',
+    toastSyncConnecting: 'Connecting sync...',
+    toastSyncConnected: 'Sync connected ✅',
+    toastSyncFailed: 'Could not connect sync, please check the config',
+    toastSyncDisconnected: 'Sync disconnected',
+  }
+};
+
+function t(key){ return STR[lang][key]; }
+
+function applyStaticText(){
+  document.title = lang === 'bn' ? 'Dream Fabrics — দোকান তালিকা' : 'Dream Fabrics — Shop Directory';
+  document.getElementById('exportBtn').textContent = t('exportBtn');
+  document.getElementById('importBtn').textContent = t('importBtn');
+  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+  document.getElementById('addBazarBtn').textContent = t('addBazarBtn');
+  document.getElementById('emptyState').innerHTML = `${t('emptyMain')}<br><b>${escapeHtml(t('addBazarBtn'))}</b> ${lang==='bn' ? 'দিয়ে শুরু করুন।' : ''} ${lang==='en' ? t('emptyHint') : ''}`;
+  document.getElementById('langBn').classList.toggle('active', lang === 'bn');
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  updateSyncIndicator(syncEnabled);
+}
+
+async function setLang(newLang){
+  lang = newLang;
+  applyStaticText();
+  render();
+  try{ localStorage.setItem(LANG_KEY, lang); }catch(e){}
+}
+
+document.getElementById('langBn').addEventListener('click', () => setLang('bn'));
+document.getElementById('langEn').addEventListener('click', () => setLang('en'));
+
+function showConfirm(message, onYes, confirmLabel){
+  openModal(`
+    <h3>${escapeHtml(t('confirmTitle'))}</h3>
+    <p class="confirm-msg">${escapeHtml(message)}</p>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn danger" id="confirmYesBtn">${escapeHtml(confirmLabel || t('deleteBtn'))}</button>
+    </div>
+  `);
+  document.getElementById('confirmYesBtn').onclick = async () => {
+    closeModal();
+    await onYes();
+  };
+}
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+async function loadData(){
+  try{
+    const langVal = localStorage.getItem(LANG_KEY);
+    if(langVal){ lang = langVal; }
+  }catch(e){}
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      data = JSON.parse(raw);
+    }
+  }catch(e){
+    data = { bazars: [] };
+  }
+  if(!data.calendarNotes) data.calendarNotes = {};
+  if(!data.bazars) data.bazars = [];
+  applyStaticText();
+  render();
+
+  const cfg = loadFirebaseConfig();
+  if(cfg){
+    await initFirebase(cfg, true);
+  }
+}
+
+async function saveData(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }catch(e){
+    showToast(t('toastSaveError'));
+  }
+  if(syncEnabled && dbRef){
+    try{
+      suppressRemoteEcho = true;
+      await dbRef.set(data);
+    }catch(e){
+      console.error(e);
+    }finally{
+      suppressRemoteEcho = false;
+    }
+  }
+}
+
+function showToast(msg){
+  const tEl = document.getElementById('toast');
+  tEl.textContent = msg;
+  tEl.classList.add('show');
+  setTimeout(()=>tEl.classList.remove('show'), 1600);
+}
+
+/* ---------- backup export / import (with fallbacks for unreliable mobile downloads) ---------- */
+
+async function copyToClipboard(text){
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  }catch(e){}
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){
+    return false;
+  }
+}
+
+function exportModal(){
+  const json = JSON.stringify(data, null, 2);
+  openModal(`
+    <h3>${escapeHtml(t('exportBtn'))}</h3>
+    <p class="confirm-msg">${lang==='bn' ? 'নিচের বাটনে ফাইল ডাউনলোড হয়। মোবাইলে ডাউনলোড না হলে "টেক্সট কপি করুন" দিয়ে কোথাও পেস্ট করে রাখুন।' : 'Use the button below to download a file. If download does not work on your phone, use "Copy text" and paste it somewhere safe instead.'}</p>
+    <div class="field">
+      <textarea id="backupText" readonly style="min-height:220px;font-family:'DM Mono',monospace;font-size:11px;">${escapeHtml(json)}</textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="copyBackupText()">📋 ${lang==='bn'?'টেক্সট কপি করুন':'Copy text'}</button>
+      <button class="btn primary" onclick="downloadBackupFile()">⬇ ${lang==='bn'?'ফাইল ডাউনলোড':'Download file'}</button>
+    </div>
+  `);
+}
+
+function downloadBackupFile(){
+  try{
+    const json = document.getElementById('backupText').value;
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `dream_fabrics_backup_${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast(t('toastBackupDone'));
+  }catch(e){
+    console.error(e);
+    showToast(lang==='bn' ? 'ডাউনলোড করা যায়নি, টেক্সট কপি করুন' : 'Could not download — please copy the text instead');
+  }
+}
+
+async function copyBackupText(){
+  const json = document.getElementById('backupText').value;
+  const ok = await copyToClipboard(json);
+  showToast(ok ? (lang==='bn'?'কপি হয়েছে':'Copied') : (lang==='bn'?'কপি করা যায়নি':'Could not copy'));
+}
+
+function importModal(){
+  openModal(`
+    <h3>${escapeHtml(t('importBtn'))}</h3>
+    <div class="field">
+      <button class="add-shop-btn" style="width:100%" onclick="document.getElementById('importFile').click()">📁 ${lang==='bn'?'ফাইল বেছে নিন':'Choose a file'}</button>
+    </div>
+    <p class="confirm-msg" style="text-align:center;margin:10px 0;">${lang==='bn' ? '— অথবা —' : '— or —'}</p>
+    <div class="field">
+      <label>${lang==='bn' ? 'ব্যাকআপ টেক্সট এখানে পেস্ট করুন' : 'Paste backup text here'}</label>
+      <textarea id="importText" placeholder="${escapeAttr(lang==='bn' ? 'এখানে ব্যাকআপ টেক্সট পেস্ট করুন...' : 'Paste backup text here...')}" style="min-height:160px;font-family:'DM Mono',monospace;font-size:11px;"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn primary" onclick="importFromText()">${lang==='bn'?'ইমপোর্ট করুন':'Import'}</button>
+    </div>
+  `);
+}
+
+function processImportedJson(raw){
+  try{
+    const imported = JSON.parse(raw);
+    if(!imported.bazars || !Array.isArray(imported.bazars)) throw new Error('invalid');
+    showConfirm(t('confirmImport'), async () => {
+      imported.bazars.forEach(b => {
+        b.id = uid();
+        (b.shops||[]).forEach(s => s.id = uid());
+      });
+      data.bazars = data.bazars.concat(imported.bazars);
+      await saveData();
+      render();
+      showToast(t('toastImportDone'));
+    }, t('continueBtn'));
+  }catch(err){
+    showToast(t('toastBadFile'));
+  }
+}
+
+function importFromText(){
+  const raw = document.getElementById('importText').value.trim();
+  if(!raw){ showToast(lang==='bn' ? 'ব্যাকআপ টেক্সট পেস্ট করুন' : 'Please paste the backup text'); return; }
+  closeModal();
+  processImportedJson(raw);
+}
+
+/* ---------- multi-phone sync (Firebase) ---------- */
+
+function loadFirebaseConfig(){
+  try{
+    const raw = localStorage.getItem(FIREBASE_CONFIG_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return null;
+}
+
+function saveFirebaseConfig(cfg){
+  try{ localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify(cfg)); }catch(e){}
+}
+
+function clearFirebaseConfig(){
+  try{ localStorage.removeItem(FIREBASE_CONFIG_KEY); }catch(e){}
+}
+
+function updateSyncIndicator(connected){
+  const btn = document.getElementById('syncBtn');
+  const txt = document.getElementById('syncBtnText');
+  if(!btn || !txt) return;
+  btn.classList.toggle('connected', !!connected);
+  txt.textContent = connected ? t('syncBtnSynced') : t('syncBtnSetup');
+}
+
+async function initFirebase(cfg, isInitialLoad){
+  try{
+    if(typeof firebase === 'undefined'){ throw new Error('firebase sdk not loaded'); }
+    if(firebase.apps && firebase.apps.length){
+      await firebase.app().delete();
+    }
+    firebase.initializeApp(cfg);
+    await firebase.auth().signInAnonymously();
+    dbRef = firebase.database().ref('shopData');
+    dbRef.on('value', (snapshot) => {
+      if(suppressRemoteEcho) return;
+      const val = snapshot.val();
+      if(val){
+        data = val;
+        if(!data.calendarNotes) data.calendarNotes = {};
+        if(!data.bazars) data.bazars = [];
+        try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch(e){}
+        render();
+      } else if(!isInitialLoad){
+        // empty cloud db on first connect from this device — seed it
+        dbRef.set(data).catch(()=>{});
+      }
+    }, (err) => {
+      console.error(err);
+      syncEnabled = false;
+      updateSyncIndicator(false);
+    });
+    syncEnabled = true;
+    updateSyncIndicator(true);
+    return true;
+  }catch(e){
+    console.error(e);
+    syncEnabled = false;
+    updateSyncIndicator(false);
+    if(!isInitialLoad) showToast(t('toastSyncFailed'));
+    return false;
+  }
+}
+
+function disconnectSync(){
+  if(dbRef){ try{ dbRef.off(); }catch(e){} }
+  dbRef = null;
+  syncEnabled = false;
+  clearFirebaseConfig();
+  updateSyncIndicator(false);
+  closeModal();
+  showToast(t('toastSyncDisconnected'));
+}
+
+function parseFirebaseConfigText(raw){
+  const start = raw.indexOf('{');
+  const end = raw.lastIndexOf('}');
+  if(start === -1 || end === -1 || end < start) throw new Error('bad format');
+  const objText = raw.slice(start, end + 1);
+  const parsed = new Function('"use strict"; return (' + objText + ');')();
+  if(!parsed || !parsed.apiKey || !parsed.databaseURL) throw new Error('missing fields');
+  return parsed;
+}
+
+function syncSetupModal(){
+  const cfg = loadFirebaseConfig();
+  openModal(`
+    <h3>${escapeHtml(t('syncModalTitle'))}</h3>
+    <p class="sync-status-msg ${syncEnabled ? '' : 'off'}">${syncEnabled ? escapeHtml(t('syncActiveMsg')) : escapeHtml(t('syncInactiveMsg'))}</p>
+    <p class="confirm-msg">${escapeHtml(t('syncIntro'))}</p>
+    <div class="field">
+      <label>${escapeHtml(t('syncFieldLabel'))}</label>
+      <textarea id="fbConfigInput" placeholder="${escapeAttr(t('syncPlaceholder'))}" style="min-height:160px;font-family:'DM Mono',monospace;font-size:12px;">${cfg ? escapeHtml(JSON.stringify(cfg, null, 2)) : ''}</textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      ${syncEnabled ? `<button class="btn danger" onclick="disconnectSync()">${escapeHtml(t('syncDisconnectBtn'))}</button>` : ''}
+      <button class="btn primary" id="syncConnectBtn">${escapeHtml(t('syncConnectBtn'))}</button>
+    </div>
+  `);
+  document.getElementById('syncConnectBtn').onclick = connectSync;
+}
+
+async function connectSync(){
+  const raw = document.getElementById('fbConfigInput').value.trim();
+  if(!raw){ showToast(t('toastNeedConfig')); return; }
+  let cfg;
+  try{
+    cfg = parseFirebaseConfigText(raw);
+  }catch(e){
+    showToast(t('toastBadConfig'));
+    return;
+  }
+  closeModal();
+  showToast(t('toastSyncConnecting'));
+  const ok = await initFirebase(cfg, false);
+  if(ok){
+    saveFirebaseConfig(cfg);
+    showToast(t('toastSyncConnected'));
+  }
+}
+
+document.getElementById('syncBtn').addEventListener('click', syncSetupModal);
+
+function openModal(html){
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('overlay').classList.add('show');
+  const modal = document.getElementById('modalContent');
+  modal.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const primaryBtn = modal.querySelector('.btn.primary');
+        if(primaryBtn) primaryBtn.click();
+      }
+    });
+  });
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('overlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'overlay') closeModal();
+});
+
+function addBazarModal(){
+  openModal(`
+    <h3>${escapeHtml(t('newBazarTitle'))}</h3>
+    <div class="field">
+      <label>${escapeHtml(t('bazarNameLabel'))}</label>
+      <input id="bazarNameInput" placeholder="${escapeAttr(t('bazarNamePh'))}" autofocus>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn primary" onclick="saveBazar()">${escapeHtml(t('add'))}</button>
+    </div>
+  `);
+}
+
+async function saveBazar(){
+  const name = document.getElementById('bazarNameInput').value.trim();
+  if(!name){ showToast(t('toastNeedName')); return; }
+  const id = uid();
+  data.bazars.push({ id, name, shops: [] });
+  openBazarId = id;
+  await saveData();
+  closeModal();
+  render();
+  showToast(t('toastBazarAdded'));
+}
+
+function editBazarModal(bazarId){
+  const b = data.bazars.find(x=>x.id===bazarId);
+  if(!b) return;
+  openModal(`
+    <h3>${escapeHtml(t('editBazarTitle'))}</h3>
+    <div class="field">
+      <label>${escapeHtml(t('bazarNameLabel'))}</label>
+      <input id="bazarNameInput" value="${escapeAttr(b.name)}" autofocus>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn primary" onclick="updateBazar('${bazarId}')">${escapeHtml(t('save'))}</button>
+    </div>
+  `);
+}
+
+async function updateBazar(bazarId){
+  const name = document.getElementById('bazarNameInput').value.trim();
+  if(!name){ showToast(t('toastNeedName')); return; }
+  const b = data.bazars.find(x=>x.id===bazarId);
+  b.name = name;
+  await saveData();
+  closeModal();
+  render();
+}
+
+async function deleteBazar(bazarId){
+  showConfirm(t('confirmDeleteBazar'), async () => {
+    data.bazars = data.bazars.filter(x=>x.id!==bazarId);
+    await saveData();
+    render();
+    showToast(t('toastBazarDeleted'));
+  });
+}
+
+function addShopModal(bazarId){
+  openModal(`
+    <h3>${escapeHtml(t('newShopTitle'))}</h3>
+    <div class="field">
+      <label>${escapeHtml(t('shopNameLabel'))}</label>
+      <input id="shopNameInput" placeholder="${escapeAttr(t('shopNamePh'))}" autofocus>
+    </div>
+    <div class="field">
+      <label>${escapeHtml(t('ownerNameLabel'))}</label>
+      <input id="ownerNameInput" placeholder="${escapeAttr(t('ownerNamePh'))}">
+    </div>
+    <div class="field">
+      <label>${escapeHtml(t('phoneLabel'))}</label>
+      <input id="phoneInput" placeholder="01XXXXXXXXX" type="tel">
+    </div>
+    <div class="field">
+      <label>${escapeHtml(t('visitDateLabel'))}</label>
+      <input id="visitDateInput" type="date" value="${todayStr()}">
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn primary" onclick="saveShop('${bazarId}')">${escapeHtml(t('add'))}</button>
+    </div>
+  `);
+}
+
+async function saveShop(bazarId){
+  const shopName = document.getElementById('shopNameInput').value.trim();
+  const ownerName = document.getElementById('ownerNameInput').value.trim();
+  const phone = document.getElementById('phoneInput').value.trim();
+  const visitDate = document.getElementById('visitDateInput').value;
+  if(!shopName && !ownerName){ showToast(t('toastNeedName')); return; }
+  const b = data.bazars.find(x=>x.id===bazarId);
+  b.shops.push({ id: uid(), shopName, ownerName, phone, visitDate, createdAt: new Date().toISOString() });
+  await saveData();
+  closeModal();
+  render();
+  showToast(t('toastShopAdded'));
+}
+
+function editShopModal(bazarId, shopId){
+  const b = data.bazars.find(x=>x.id===bazarId);
+  const s = b.shops.find(x=>x.id===shopId);
+  openModal(`
+    <h3>${escapeHtml(t('editShopTitle'))}</h3>
+    <div class="field">
+      <label>${escapeHtml(t('shopNameLabel'))}</label>
+      <input id="shopNameInput" value="${escapeAttr(s.shopName)}" autofocus>
+    </div>
+    <div class="field">
+      <label>${escapeHtml(t('ownerNameLabel'))}</label>
+      <input id="ownerNameInput" value="${escapeAttr(s.ownerName)}">
+    </div>
+    <div class="field">
+      <label>${escapeHtml(t('phoneLabel'))}</label>
+      <input id="phoneInput" value="${escapeAttr(s.phone)}" type="tel">
+    </div>
+    <div class="field">
+      <label>${escapeHtml(t('visitDateLabel'))}</label>
+      <input id="visitDateInput" type="date" value="${escapeAttr(s.visitDate || todayStr())}">
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn primary" onclick="updateShop('${bazarId}','${shopId}')">${escapeHtml(t('save'))}</button>
+    </div>
+  `);
+}
+
+async function updateShop(bazarId, shopId){
+  const b = data.bazars.find(x=>x.id===bazarId);
+  const s = b.shops.find(x=>x.id===shopId);
+  s.shopName = document.getElementById('shopNameInput').value.trim();
+  s.ownerName = document.getElementById('ownerNameInput').value.trim();
+  s.phone = document.getElementById('phoneInput').value.trim();
+  s.visitDate = document.getElementById('visitDateInput').value;
+  await saveData();
+  closeModal();
+  render();
+}
+
+async function deleteShop(bazarId, shopId){
+  showConfirm(t('confirmDeleteShop'), async () => {
+    const b = data.bazars.find(x=>x.id===bazarId);
+    b.shops = b.shops.filter(x=>x.id!==shopId);
+    await saveData();
+    render();
+    showToast(t('toastShopDeleted'));
+  });
+}
+
+function noteModal(bazarId, shopId){
+  const b = data.bazars.find(x=>x.id===bazarId);
+  const s = b.shops.find(x=>x.id===shopId);
+  
+  // Convert old note format to new format if needed
+  if(typeof s.note === 'string'){
+    s.note = { text: s.note || '', items: [] };
+  }
+  if(!s.note) s.note = { text: '', items: [] };
+  
+  const itemsHtml = (s.note.items || []).map(item => `
+    <div style="display:flex;gap:8px;flex-direction:column;padding:12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--panel2);">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="checkbox" id="item_${item.id}" ${item.done ? 'checked' : ''} style="cursor:pointer;">
+        <button onclick="deleteNoteItemUI('${item.id}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;margin-left:auto;">🗑</button>
+      </div>
+      <textarea id="text_${item.id}" placeholder="Write your note here..." style="width:100%;background:transparent;border:none;color:var(--cream);font-family:inherit;font-size:13px;resize:vertical;min-height:80px;padding:0;">${escapeHtml(item.text)}</textarea>
+    </div>
+  `).join('');
+  
+  openModal(`
+    <h3>${escapeHtml(t('noteModalTitle'))} — ${escapeHtml(s.shopName || s.ownerName || '')}</h3>
+    
+    <div class="field">
+      <label style="font-size:12px;color:var(--muted);">📝 Main Note</label>
+      <textarea id="noteText" placeholder="Write your main note here..." style="min-height:200px;">${escapeHtml(s.note.text || '')}</textarea>
+    </div>
+    
+    <div style="margin-top:16px;margin-bottom:12px;">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px;">✓ Items Checklist</label>
+      <div style="max-height:350px;overflow-y:auto;margin-bottom:12px;">
+        ${itemsHtml || '<div style="color:var(--muted);text-align:center;padding:16px;">কোনো আইটেম নেই</div>'}
+      </div>
+      <button onclick="addNoteItem('${bazarId}','${shopId}')" style="width:100%;background:var(--panel2);border:1px dashed var(--line);color:var(--gold);padding:10px;border-radius:8px;font-family:inherit;cursor:pointer;">+ Add item</button>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn primary" onclick="saveNoteItems('${bazarId}','${shopId}')">${escapeHtml(t('save'))}</button>
+    </div>
+  `);
+}
+
+async function saveNoteItems(bazarId, shopId){
+  const b = data.bazars.find(x=>x.id===bazarId);
+  const s = b.shops.find(x=>x.id===shopId);
+  
+  const noteText = document.getElementById('noteText').value.trim();
+  
+  const items = [];
+  const itemEls = document.querySelectorAll('input[id^="item_"]');
+  itemEls.forEach(el => {
+    const itemId = el.id.replace('item_', '');
+    const textEl = document.getElementById('text_' + itemId);
+    if(textEl) {
+      const text = textEl.value.trim();
+      const done = el.checked;
+      if(text) {
+        items.push({id: itemId, text, done});
+      }
+    }
+  });
+  
+  s.note = { text: noteText, items };
+  await saveData();
+  closeModal();
+  render();
+  showToast(t('toastNoteSaved'));
+}
+
+function addNoteItem(bazarId, shopId){
+  const newId = uid();
+  const container = document.querySelector('div[style*="max-height:350px"]');
+  const newHtml = `
+    <div style="display:flex;gap:8px;flex-direction:column;padding:12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--panel2);">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="checkbox" id="item_${newId}" style="cursor:pointer;">
+        <button onclick="deleteNoteItemUI('${newId}')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;margin-left:auto;">🗑</button>
+      </div>
+      <textarea id="text_${newId}" placeholder="Write your note here..." style="width:100%;background:transparent;border:none;color:var(--cream);font-family:inherit;font-size:13px;resize:vertical;min-height:80px;padding:0;" autofocus></textarea>
+    </div>
+  `;
+  container.insertAdjacentHTML('beforeend', newHtml);
+  document.getElementById('text_' + newId).focus();
+}
+
+function deleteNoteItemUI(itemId){
+  const el = document.getElementById('item_' + itemId);
+  if(el) el.closest('[style*="display:flex"]').remove();
+}
+
+async function deleteNoteItem(bazarId, shopId, itemId){
+  const b = data.bazars.find(x=>x.id===bazarId);
+  const s = b.shops.find(x=>x.id===shopId);
+  if(s.note && s.note.items){
+    s.note.items = s.note.items.filter(i => i.id !== itemId);
+  }
+  await saveData();
+  noteModal(bazarId, shopId);
+}
+
+function openCalendarNoteModal(calType, year, month, day){
+  const dateKey = `${calType}_${year}_${month}_${day}`;
+  const note = data.calendarNotes[dateKey] || '';
+  const dateLabel = `${day}/${month}/${year}`;
+  openModal(`
+    <h3>📝 Calendar Note — ${escapeHtml(dateLabel)}</h3>
+    <div class="field">
+      <textarea id="calNoteInput" placeholder="Add a note for this date...">${escapeHtml(note)}</textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveCalendarNote('${dateKey}')">Save</button>
+      ${note ? `<button class="btn danger" onclick="deleteCalendarNote('${dateKey}')">Delete</button>` : ''}
+    </div>
+  `);
+}
+
+async function saveCalendarNote(dateKey){
+  const note = document.getElementById('calNoteInput').value.trim();
+  if(note){
+    data.calendarNotes[dateKey] = note;
+  } else {
+    delete data.calendarNotes[dateKey];
+  }
+  await saveData();
+  closeModal();
+  renderCalendar();
+  showToast('Calendar note saved');
+}
+
+async function deleteCalendarNote(dateKey){
+  delete data.calendarNotes[dateKey];
+  await saveData();
+  closeModal();
+  renderCalendar();
+  showToast('Calendar note deleted');
+}
+
+function toggleBazar(bazarId){
+  openBazarId = (openBazarId === bazarId) ? null : bazarId;
+  render();
+}
+
+function escapeHtml(str){
+  return (str||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+function cleanPhone(p){ return (p||'').replace(/[^\d+]/g,''); }
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function formatVisitDate(dateStr){
+  if(!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d)) return dateStr;
+  const locale = lang === 'bn' ? 'bn-BD' : 'en-GB';
+  return d.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function formatAddedAt(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  if(isNaN(d)) return '';
+  const locale = lang === 'bn' ? 'bn-BD' : 'en-GB';
+  const datePart = d.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+  const timePart = d.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' });
+  return `${datePart}, ${timePart}`;
+}
+
+/* ---------- calendar conversions ---------- */
+const BN_DIGITS = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+function toBnNum(n){ return String(n).split('').map(c => /[0-9]/.test(c) ? BN_DIGITS[+c] : c).join(''); }
+
+const GREG_MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const GREG_MONTHS_BN = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+const HIJRI_MONTHS = ['Muharram','Safar',"Rabi' al-awwal","Rabi' al-thani",'Jumada al-awwal','Jumada al-thani','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhu al-Qi'dah",'Dhu al-Hijjah'];
+const HIJRI_MONTHS_BN = ['মুহাররম','সফর','রবিউল আউয়াল','রবিউস সানি','জমাদিউল আউয়াল','জমাদিউস সানি','রজব','শাবান','রমজান','শাওয়াল','জিলকদ','জিলহজ্জ'];
+
+const BANGLA_MONTHS = ['বৈশাখ','জ্যৈষ্ঠ','আষাঢ়','শ্রাবণ','ভাদ্র','আশ্বিন','কার্তিক','অগ্রহায়ণ','পৌষ','মাঘ','ফাল্গুন','চৈত্র'];
+
+function isGregLeap(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+
+function gregorianToJD(y,m,d){
+  const a = Math.floor((14-m)/12);
+  const yy = y + 4800 - a;
+  const mm = m + 12*a - 3;
+  return d + Math.floor((153*mm+2)/5) + 365*yy + Math.floor(yy/4) - Math.floor(yy/100) + Math.floor(yy/400) - 32045;
+}
+function jdToGregorian(jd){
+  let a = jd + 32044;
+  let b = Math.floor((4*a+3)/146097);
+  let c = a - Math.floor((146097*b)/4);
+  let d = Math.floor((4*c+3)/1461);
+  let e = c - Math.floor((1461*d)/4);
+  let m = Math.floor((5*e+2)/153);
+  const day = e - Math.floor((153*m+2)/5) + 1;
+  const month = m + 3 - 12*Math.floor(m/10);
+  const year = 100*b + d - 4800 + Math.floor(m/10);
+  return { year, month, day };
+}
+
+/* Islamic tabular calendar (Kuwaiti algorithm) */
+function islamicToJD(y,m,d){
+  return d + Math.ceil(29.5*(m-1)) + (y-1)*354 + Math.floor((3+11*y)/30) + 1948440 - 1;
+}
+function jdToIslamic(jd){
+  let l = Math.floor(jd) - 1948440 + 10632;
+  const n = Math.floor((l-1)/10631);
+  l = l - 10631*n + 354;
+  const j = (Math.floor((10985-l)/5316))*(Math.floor((50*l)/17719)) + (Math.floor(l/5670))*(Math.floor((43*l)/15238));
+  l = l - (Math.floor((30-j)/15))*(Math.floor((17719*j)/50)) - (Math.floor(j/16))*(Math.floor((15238*j)/43)) + 29;
+  const month = Math.floor((24*l)/709);
+  const day = l - Math.floor((709*month)/24);
+  const year = 30*n + j - 30;
+  return { year, month, day };
+}
+function islamicMonthLength(y,m){
+  if(m===12) return isIslamicLeap(y) ? 30 : 29;
+  return m%2===1 ? 30 : 29;
+}
+function isIslamicLeap(y){ return ((11*y+14)%30) < 11; }
+
+function dateToJD(date){ return gregorianToJD(date.getFullYear(), date.getMonth()+1, date.getDate()); }
+
+/* Bangla calendar (post-2019 revision, New Year fixed April 14) */
+function banglaMonthLengths(gYearOfNewYear){
+  // gYearOfNewYear = Gregorian year in which Boishakh 1 falls
+  const choitroLeap = isGregLeap(gYearOfNewYear+1);
+  return [31,31,31,31,31,30,30,30,30,30,30, choitroLeap?31:30];
+}
+function gregorianToBangla(date){
+  const y = date.getFullYear(), m = date.getMonth()+1, d = date.getDate();
+  let gYear = (m > 4 || (m===4 && d>=14)) ? y : y-1;
+  const newYearJD = gregorianToJD(gYear,4,14);
+  const jd = gregorianToJD(y,m,d);
+  let dayOffset = jd - newYearJD;
+  const lengths = banglaMonthLengths(gYear);
+  let month = 0;
+  while(dayOffset >= lengths[month]){ dayOffset -= lengths[month]; month++; }
+  return { year: gYear-593, month: month+1, day: dayOffset+1 };
+}
+function banglaToGregorianJD(bYear, bMonth, bDay){
+  const gYear = bYear + 593;
+  const newYearJD = gregorianToJD(gYear,4,14);
+  const lengths = banglaMonthLengths(gYear);
+  let offset = 0;
+  for(let i=0;i<bMonth-1;i++) offset += lengths[i];
+  return newYearJD + offset + (bDay-1);
+}
+
+/* ---------- calendar modal state & render ---------- */
+let calTab = 'greg';
+let calView = {};
+
+function initCalView(){
+  const today = new Date();
+  const todayJD = dateToJD(today);
+  const hijri = jdToIslamic(todayJD);
+  const bangla = gregorianToBangla(today);
+  calView = {
+    greg: { year: today.getFullYear(), month: today.getMonth()+1 },
+    hijri: { year: hijri.year, month: hijri.month },
+    bangla: { year: bangla.year, month: bangla.month }
+  };
+}
+
+function openCalendar(){
+  initCalView();
+  calTab = 'greg';
+  renderCalendar();
+}
+
+function renderCalendar(){
+  openModal(renderCalendarHTML());
+}
+
+function renderCalendarHTML(){
+  const today = new Date();
+  const todayJD = dateToJD(today);
+  const hijriToday = jdToIslamic(todayJD);
+  const banglaToday = gregorianToBangla(today);
+
+  const gregTitle = lang==='bn' ? `${GREG_MONTHS_BN[today.getMonth()]} ${toBnNum(today.getFullYear())}` : `${GREG_MONTHS_EN[today.getMonth()]} ${today.getFullYear()}`;
+  const hijriSub = lang==='bn'
+    ? `${toBnNum(hijriToday.day)} ${HIJRI_MONTHS_BN[hijriToday.month-1]} ${toBnNum(hijriToday.year)} হিজরি`
+    : `${hijriToday.day} ${HIJRI_MONTHS[hijriToday.month-1]} ${hijriToday.year} AH`;
+  const banglaSub = `${toBnNum(banglaToday.day)} ${BANGLA_MONTHS[banglaToday.month-1]} ${toBnNum(banglaToday.year)}`;
+
+  return `
+    <div class="cal-modal">
+      <div class="cal-head">
+        <button class="cal-close" onclick="closeModal()">✕</button>
+        <h3>${escapeHtml(gregTitle)}</h3>
+        <div class="cal-sub">🌙 ${escapeHtml(hijriSub)}</div>
+        <div class="cal-sub">🌸 ${escapeHtml(banglaSub)}</div>
+      </div>
+      <div class="cal-tabs">
+        <button class="cal-tab ${calTab==='greg'?'active':''}" onclick="switchCalTab('greg')">📅 Gregorian</button>
+        <button class="cal-tab ${calTab==='hijri'?'active':''}" onclick="switchCalTab('hijri')">🌙 হিজরি</button>
+        <button class="cal-tab ${calTab==='bangla'?'active':''}" onclick="switchCalTab('bangla')">🌸 বাংলা</button>
+      </div>
+      ${renderCalGrid()}
+    </div>
+  `;
+}
+
+function switchCalTab(tabName){
+  calTab = tabName;
+  document.getElementById('modalContent').innerHTML = renderCalendarHTML();
+}
+
+function navCal(dir){
+  const v = calView[calTab];
+  v.month += dir;
+  if(v.month > 12){ v.month = 1; v.year++; }
+  if(v.month < 1){ v.month = 12; v.year--; }
+  document.getElementById('modalContent').innerHTML = renderCalendarHTML();
+}
+
+function renderCalGrid(){
+  const v = calView[calTab];
+  let monthLabel = '', startDate, monthLen, todayMatch = {};
+
+  const today = new Date();
+  const todayJD = dateToJD(today);
+
+  if(calTab === 'greg'){
+    monthLabel = (lang==='bn' ? GREG_MONTHS_BN[v.month-1]+' '+toBnNum(v.year) : GREG_MONTHS_EN[v.month-1]+' '+v.year);
+    startDate = new Date(v.year, v.month-1, 1);
+    monthLen = new Date(v.year, v.month, 0).getDate();
+    todayMatch = { year: today.getFullYear(), month: today.getMonth()+1, day: today.getDate() };
+  } else if(calTab === 'hijri'){
+    const jd1 = islamicToJD(v.year, v.month, 1);
+    const g = jdToGregorian(jd1);
+    startDate = new Date(g.year, g.month-1, g.day);
+    monthLen = islamicMonthLength(v.year, v.month);
+    const hijriToday = jdToIslamic(todayJD);
+    monthLabel = lang==='bn' ? `${HIJRI_MONTHS_BN[v.month-1]} ${toBnNum(v.year)}` : `${HIJRI_MONTHS[v.month-1]} ${v.year}`;
+    todayMatch = { year: hijriToday.year, month: hijriToday.month, day: hijriToday.day };
+  } else {
+    const jd1 = banglaToGregorianJD(v.year, v.month, 1);
+    const g = jdToGregorian(jd1);
+    startDate = new Date(g.year, g.month-1, g.day);
+    monthLen = banglaMonthLengths(v.year+593)[v.month-1];
+    const banglaToday = gregorianToBangla(today);
+    monthLabel = `${BANGLA_MONTHS[v.month-1]} ${toBnNum(v.year)}`;
+    todayMatch = { year: banglaToday.year, month: banglaToday.month, day: banglaToday.day };
+  }
+
+  const startWeekday = startDate.getDay();
+  const cells = [];
+  for(let i=0;i<startWeekday;i++) cells.push('<div class="cal-cell empty"></div>');
+  for(let day=1; day<=monthLen; day++){
+    const isFri = ((startWeekday + day - 1) % 7) === 5;
+    const isToday = (v.year===todayMatch.year && v.month===todayMatch.month && day===todayMatch.day);
+    const label = (lang==='bn' || calTab==='bangla') ? toBnNum(day) : day;
+    const dateKey = `${calTab}_${v.year}_${v.month}_${day}`;
+    const hasNote = data.calendarNotes[dateKey] ? 'has-note' : '';
+    cells.push(`<div class="cal-cell ${isFri?'fri':''} ${isToday?'today':''} ${hasNote}" onclick="openCalendarNoteModal('${calTab}',${v.year},${v.month},${day})">${label}</div>`);
+  }
+
+  const weekdayHtml = WEEKDAYS.map((w,i) => `<span class="${i===5?'fri':''}">${w}</span>`).join('');
+
+  return `
+    <div class="cal-nav">
+      <button onclick="navCal(-1)">‹</button>
+      <span class="cal-month-label">${escapeHtml(monthLabel)}</span>
+      <button onclick="navCal(1)">›</button>
+    </div>
+    <div class="cal-weekdays">${weekdayHtml}</div>
+    <div class="cal-grid">${cells.join('')}</div>
+  `;
+}
+
+function updateClock(){
+  const now = new Date();
+  const locale = lang === 'bn' ? 'bn-BD' : 'en-US';
+  const txt = now.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' });
+  const el = document.getElementById('timeBtnText');
+  if(el) el.textContent = txt;
+}
+setInterval(updateClock, 30000);
+document.getElementById('timeBtn').addEventListener('click', openCalendar);
+
+
+
+function waNumber(p){
+  let n = cleanPhone(p);
+  n = n.replace(/^\+/, '');
+  if(n.startsWith('880')) return n;
+  if(n.startsWith('0')) return '88' + n;
+  return n;
+}
+
+function render(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const container = document.getElementById('bazarContainer');
+  const empty = document.getElementById('emptyState');
+
+  let totalShops = 0;
+  data.bazars.forEach(b => totalShops += b.shops.length);
+  document.getElementById('totalCount').textContent =
+    data.bazars.length ? t('countLabel')(data.bazars.length, totalShops) : '';
+
+  if(data.bazars.length === 0){
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  container.innerHTML = data.bazars.map(b => {
+    let shops = b.shops;
+    if(q){
+      shops = shops.filter(s =>
+        (s.shopName||'').toLowerCase().includes(q) ||
+        (s.ownerName||'').toLowerCase().includes(q) ||
+        (s.phone||'').toLowerCase().includes(q)
+      );
+    }
+    if(q && b.name.toLowerCase().includes(q)){
+      shops = b.shops;
+    }
+    if(q && shops.length === 0 && !b.name.toLowerCase().includes(q)) return '';
+
+    const isOpen = q ? true : (openBazarId === b.id);
+
+    const shopRows = shops.map(s => `
+      <div class="shop">
+        <div class="shop-info">
+          <div class="shop-name">${escapeHtml(s.shopName) || `<span style="color:var(--muted)">${escapeHtml(t('nameNone'))}</span>`}</div>
+          ${s.ownerName ? `<div class="shop-owner">${escapeHtml(t('ownerPrefix'))}${escapeHtml(s.ownerName)}</div>` : ''}
+          ${s.phone ? `<div class="shop-phone">${escapeHtml(s.phone)}</div>` : ''}
+          ${s.visitDate ? `<div class="shop-date">📅 ${escapeHtml(t('visitPrefix'))}${escapeHtml(formatVisitDate(s.visitDate))}</div>` : ''}
+        </div>
+        <div class="shop-actions">
+          ${s.phone ? `<a class="pill-btn call" href="tel:${cleanPhone(s.phone)}" title="${escapeAttr(t('callTitle'))}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </a>` : ''}
+          ${s.phone ? `<a class="pill-btn wa" href="https://wa.me/${waNumber(s.phone)}" target="_blank" title="${escapeAttr(t('waTitle'))}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.94L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.53 3.69-8.22 8.24-8.22 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.53-3.69 8.2-8.24 8.2zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.78.97-.14.17-.29.18-.53.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.38.11-.51.12-.12.27-.31.41-.47.14-.16.18-.27.27-.45.09-.18.04-.34-.04-.47-.08-.13-.5-1.2-.69-1.65-.18-.43-.37-.37-.51-.38-.13-.01-.28-.01-.43-.01-.15 0-.39.06-.6.31-.21.25-.8.78-.8 1.9 0 1.12.82 2.2.93 2.35.11.15 1.55 2.37 3.76 3.23 1.86.73 2.24.59 2.65.55.41-.04 1.32-.54 1.51-1.06.18-.52.18-.96.13-1.06-.05-.1-.18-.16-.43-.28z"/></svg>
+          </a>` : ''}
+          <button class="pill-btn note ${(s.note && ((typeof s.note === 'string' && s.note) || (s.note.text) || (s.note.items && s.note.items.length > 0))) ? 'has-note' : ''}" onclick="noteModal('${b.id}','${s.id}')" title="${escapeAttr(t('noteTitle'))}">📝</button>
+          <button class="pill-btn edit" onclick="editShopModal('${b.id}','${s.id}')" title="${escapeAttr(t('editTitle'))}">✎</button>
+          <button class="pill-btn del" onclick="deleteShop('${b.id}','${s.id}')" title="${escapeAttr(t('deleteTitle'))}">🗑</button>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="bazar ${isOpen ? 'open' : ''}">
+        <div class="bazar-head" onclick="toggleBazar('${b.id}')">
+          <div class="bazar-title">
+            <span class="chev">▶</span>
+            <span class="bazar-name">${escapeHtml(b.name)}</span>
+            <span class="bazar-badge">${b.shops.length}</span>
+          </div>
+          <div class="bazar-actions">
+            <button class="icon-btn" onclick="event.stopPropagation(); editBazarModal('${b.id}')" title="${escapeAttr(t('editTitle'))}">✎</button>
+            <button class="icon-btn" onclick="event.stopPropagation(); deleteBazar('${b.id}')" title="${escapeAttr(t('deleteTitle'))}">🗑</button>
+          </div>
+        </div>
+        <div class="shop-list">
+          ${shopRows || `<div class="empty" style="padding:18px;">${escapeHtml(t('noShops'))}</div>`}
+          <div class="add-shop-row">
+            <button class="add-shop-btn" onclick="addShopModal('${b.id}')">${escapeHtml(t('addShopBtn'))}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+document.getElementById('addBazarBtn').addEventListener('click', addBazarModal);
+document.getElementById('searchInput').addEventListener('input', render);
+
+document.getElementById('exportBtn').addEventListener('click', exportModal);
+document.getElementById('importBtn').addEventListener('click', importModal);
+
+document.getElementById('importFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    closeModal();
+    processImportedJson(ev.target.result);
+    e.target.value = '';
+  };
+  reader.onerror = () => {
+    showToast(t('toastBadFile'));
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+
+loadData();
+</script>
+</body>
+</html>
