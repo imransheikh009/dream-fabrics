@@ -64,48 +64,51 @@
   .sync-status-msg{font-size:12.5px;color:var(--green);margin:0 0 14px;display:flex;align-items:center;gap:6px;}
   .sync-status-msg.off{color:var(--muted);}
 
-  /* calendar modal */
   .cal-modal{padding:0;overflow:hidden;}
-  .cal-head{
-    background:linear-gradient(160deg,#1a1306,var(--bg));padding:18px 18px 14px;position:relative;
+  .cal-modal .cal-head{
+    background:linear-gradient(160deg,#1a1306,var(--bg));padding:8px 12px 6px;position:relative;
   }
-  .cal-head .cal-close{
-    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
-    background:rgba(255,255,255,.08);border:none;color:var(--cream);font-size:15px;cursor:pointer;
+  .cal-modal .cal-close{
+    position:absolute;top:7px;right:8px;width:24px;height:24px;border-radius:50%;
+    background:rgba(255,255,255,.08);border:none;color:var(--cream);font-size:13px;cursor:pointer;
   }
-  .cal-head h3{margin:0 0 8px;color:var(--gold);font-size:19px;font-weight:700;}
-  .cal-sub{font-size:12.5px;color:var(--muted);margin:3px 0;display:flex;align-items:center;gap:6px;}
+  .cal-modal h3{margin:0 0 2px;color:var(--gold);font-size:14px;font-weight:700;}
+  .cal-sub{font-size:10px;color:var(--muted);margin:1px 0;display:flex;align-items:center;gap:4px;}
 
   .cal-tabs{display:flex;border-bottom:1px solid var(--line);}
   .cal-tab{
-    flex:1;text-align:center;padding:11px 6px;font-size:13px;font-weight:700;cursor:pointer;
+    flex:1;text-align:center;padding:5px 4px;font-size:10px;font-weight:700;cursor:pointer;
     background:var(--panel2);color:var(--muted);border:none;font-family:inherit;
-    display:flex;align-items:center;justify-content:center;gap:5px;
+    display:flex;align-items:center;justify-content:center;gap:3px;
   }
   .cal-tab.active{background:var(--gold);color:#15120a;}
 
-  .cal-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 6px;}
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;padding:5px 8px 2px;}
   .cal-nav button{
-    width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);
-    color:var(--cream);cursor:pointer;font-size:14px;
+    width:22px;height:22px;border-radius:5px;border:1px solid var(--line);background:var(--panel2);
+    color:var(--cream);cursor:pointer;font-size:12px;
   }
   .cal-nav button:hover{border-color:var(--gold);color:var(--gold);}
-  .cal-nav .cal-month-label{font-size:15px;font-weight:700;color:var(--cream);}
+  .cal-nav .cal-month-label{font-size:12px;font-weight:700;color:var(--cream);}
 
-  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:6px 14px 0;}
-  .cal-weekdays span{text-align:center;font-size:11px;color:var(--muted);padding:6px 0;}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:2px 4px 1px;width:100%;box-sizing:border-box;}
+  .cal-weekdays span{text-align:center;font-size:9px;color:var(--muted);padding:2px 0;}
   .cal-weekdays span.fri{color:var(--green);}
+  .cal-weekdays span.sat{color:var(--red);opacity:.8;}
 
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);padding:0 14px 18px;gap:4px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:0 4px 8px;gap:2px;width:100%;box-sizing:border-box;overflow:visible;}
   .cal-cell{
-    aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;
-    border-radius:9px;color:var(--cream);
+    aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;
+    border-radius:5px;color:var(--cream);padding:1px;
   }
   .cal-cell.empty{visibility:hidden;}
   .cal-cell.fri{color:var(--green);}
-  .cal-cell.today{background:var(--gold);color:#15120a;font-weight:700;}
+  .cal-cell.sat{color:var(--red);opacity:.8;}
+  .cal-cell.today{background:var(--gold);color:#15120a !important;font-weight:700;}
+  .cal-cell.today.fri{color:#15120a !important;}
+  .cal-cell.today.sat{color:#15120a !important;}
   .cal-cell{cursor:pointer;position:relative;}
-  .cal-cell.has-note::after{content:'•';position:absolute;bottom:2px;right:5px;color:var(--gold);font-size:16px;}
+  .cal-cell.has-note::after{content:'•';position:absolute;bottom:1px;right:4px;color:var(--gold);font-size:14px;}
 
   .backup-row{display:flex;gap:8px;margin-bottom:16px;}
   .backup-btn{
@@ -129,6 +132,30 @@
     font-family:inherit;
   }
   .add-bazar-btn:hover{border-color:var(--gold);background:var(--panel2);}
+
+  .market-select-btn{
+    width:100%;display:flex;align-items:center;justify-content:space-between;
+    background:var(--panel);border:1px solid var(--line);color:var(--cream);
+    padding:14px 16px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:18px;
+    font-family:inherit;text-align:left;
+  }
+  .market-select-btn:hover{border-color:var(--gold);background:var(--panel2);}
+  .market-select-btn .msb-name{color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .market-select-btn .msb-arrow{color:var(--muted);font-size:13px;flex-shrink:0;margin-left:10px;}
+
+  .market-list-item{
+    display:flex;align-items:center;justify-content:space-between;padding:12px 14px;gap:8px;
+    border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;background:var(--panel2);
+  }
+  .market-list-item:hover{border-color:var(--gold);}
+  .market-list-item.current{border-color:var(--gold);background:#241f12;}
+  .market-list-name{font-size:14px;font-weight:600;color:var(--cream);display:flex;align-items:center;gap:8px;min-width:0;}
+  .market-list-name span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .market-list-actions{display:flex;gap:4px;flex-shrink:0;}
+
+  .market-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;}
+  .market-header-title{display:flex;align-items:center;gap:10px;min-width:0;}
+  .market-header-name{font-size:17px;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
   .bazar{
     margin-bottom:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;
@@ -179,7 +206,85 @@
   .pill-btn.del:hover{border-color:var(--red);color:var(--red);}
 
   .add-shop-row{padding:10px 16px 14px;}
-  .add-shop-btn{
+
+  .day-toggle-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;}
+  .day-toggle-btn{
+    flex:1;min-width:0;padding:8px 4px;border-radius:8px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--muted);font-size:12px;font-weight:700;
+    cursor:pointer;font-family:inherit;text-align:center;transition:all .15s;
+  }
+  .day-toggle-btn.selected{background:var(--gold);border-color:var(--gold);color:#15120a;}
+  .day-toggle-btn.fri{color:var(--green);}
+  .day-toggle-btn.fri.selected{background:var(--green);border-color:var(--green);color:#0d1a10;}
+
+  /* Day View Card */
+  .dv-card{margin:10px 0 14px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);font-size:93%;}
+  .dv-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px;border-bottom:1px solid var(--line);}
+  .dv-title{font-size:12px;font-weight:700;color:var(--gold);}
+  .dv-tabs{display:flex;overflow-x:auto;background:var(--panel2);border-bottom:1px solid var(--line);}
+  .dv-tabs::-webkit-scrollbar{display:none;}
+  .dv-tab{
+    flex:1;min-width:0;padding:6px 3px;font-size:10px;font-weight:700;color:var(--muted);
+    cursor:pointer;border:none;background:transparent;font-family:inherit;
+    border-bottom:2px solid transparent;white-space:nowrap;text-align:center;
+  }
+  .dv-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+  .dv-tab.today{color:var(--green);}
+  .dv-tab.active.today{color:var(--green);border-bottom-color:var(--green);}
+  .dv-list{padding:4px 0;}
+  .dv-body{overflow:hidden;max-height:0;}
+  .dv-body.open{max-height:none;}
+  .dv-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:7px 12px;border-bottom:1px solid var(--line);gap:8px;
+  }
+  .dv-item:last-child{border-bottom:none;}
+  .dv-item-info{min-width:0;}
+  .dv-item-name{font-size:12px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dv-item-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+  .dv-item-phone{font-size:10.5px;color:var(--green);font-family:'DM Mono',monospace;margin-top:1px;}
+  .dv-item-actions{display:flex;gap:4px;flex-shrink:0;}
+  .dv-empty{text-align:center;color:var(--muted);padding:12px;font-size:11px;}
+  .dv-item-note{font-size:11px;color:var(--cream);opacity:.85;line-height:1.4;white-space:pre-wrap;word-break:break-word;}
+  .dv-item-checklist{margin-top:4px;display:flex;flex-direction:column;gap:2px;}
+  .dv-check-row{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--cream);}
+  .dv-check-row.done{color:var(--muted);text-decoration:line-through;}
+  .dv-check-dot{font-size:9px;color:var(--muted);flex-shrink:0;}
+  .dv-check-dot.done{color:var(--green);}
+
+  /* Note View Card - To-Do Style */
+  .nv-card{margin:0 0 14px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);font-size:93%;}
+  .nv-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;}
+  .nv-title{font-size:12px;font-weight:700;color:var(--gold);}
+  .nv-body{overflow:hidden;max-height:0;}
+  .nv-body.open{max-height:none;}
+
+  /* quick-add bar */
+  .nv-quick-add{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);}
+  .nv-quick-input{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--cream);padding:8px 10px;border-radius:8px;font-size:13px;font-family:inherit;}
+  .nv-quick-input:focus{outline:none;border-color:var(--gold);}
+  .nv-quick-btn{background:var(--gold);border:none;color:#15120a;font-size:18px;font-weight:700;width:36px;border-radius:8px;cursor:pointer;flex-shrink:0;}
+  .nv-quick-btn:hover{opacity:.85;}
+
+  /* todo items */
+  .nv-todo-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);}
+  .nv-todo-item:last-child{border-bottom:none;}
+  .nv-todo-check{width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);background:transparent;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;}
+  .nv-todo-check.done{background:var(--green);border-color:var(--green);color:#0d1a10;}
+  .nv-todo-text{flex:1;font-size:13px;color:var(--cream);line-height:1.5;word-break:break-word;cursor:pointer;}
+  .nv-todo-text.done{color:var(--muted);text-decoration:line-through;}
+  .nv-todo-del{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:2px 4px;flex-shrink:0;opacity:0;}
+  .nv-todo-item:hover .nv-todo-del{opacity:1;}
+  .nv-todo-del:hover{color:var(--red);}
+  .nv-todo-meta{font-size:10px;color:var(--muted);margin-top:2px;}
+  .nv-empty{text-align:center;color:var(--muted);padding:20px;font-size:12px;}
+
+  /* filter tabs */
+
+  .nv-item-edit{display:none;}
+  .nv-search{display:none;}
+
+  
     width:100%;background:transparent;border:1px dashed var(--line);color:var(--gold);
     padding:9px;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;
   }
@@ -202,9 +307,11 @@
     animation:up .18s ease-out;
     max-height:85vh;overflow-y:auto;
   }
+  .modal.is-cal-modal{max-height:none;overflow:visible;padding:0 !important;border-radius:18px 18px 0 0;}
   @media(min-width:560px){
     .overlay{align-items:center;}
     .modal{border-radius:16px;max-height:80vh;}
+    .modal.is-cal-modal{max-height:none;border-radius:16px;}
   }
   @keyframes up{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
   .modal h3{margin:0 0 14px;color:var(--gold);font-size:16px;}
@@ -262,14 +369,35 @@
     <input type="file" id="importFile" accept=".json,application/json,text/plain" style="display:none;">
   </div>
 
-  <div class="searchbar">
-    <input id="searchInput">
+  <button class="market-select-btn" id="marketSelectBtn">
+    <span class="msb-name" id="marketSelectBtnText"></span>
+    <span class="msb-arrow">▾</span>
+  </button>
+
+  <div id="emptyState" class="empty" style="display:none;"></div>
+
+  <div class="dv-card" id="mainDvCard" style="display:none;">
+    <div class="dv-header" onclick="toggleDayView()" style="cursor:pointer;user-select:none;">
+      <span class="dv-title">🗓 <span id="dvTitle"></span></span>
+      <span id="dvChev" style="color:var(--muted);font-size:11px;">▸</span>
+    </div>
+    <div class="dv-tabs" id="dvTabsBar"></div>
+    <div class="dv-body" id="dvBody"><div id="dvList"></div></div>
   </div>
 
-  <button class="add-bazar-btn" id="addBazarBtn"></button>
-
-  <div id="bazarContainer"></div>
-  <div id="emptyState" class="empty" style="display:none;"></div>
+  <div class="nv-card" id="mainNvCard" style="display:none;">
+    <div class="nv-header" onclick="toggleNoteView()">
+      <span class="nv-title">✅ <span id="nvTitle"></span></span>
+      <span id="nvChev" style="color:var(--muted);font-size:11px;">▸</span>
+    </div>
+    <div class="nv-body" id="nvBody">
+    <div class="nv-quick-add">
+        <input class="nv-quick-input" id="nvQuickInput" placeholder="নতুন কাজ লিখুন..." onkeydown="nvQuickEnter(event)">
+        <button class="nv-quick-btn" onclick="nvQuickAdd()">+</button>
+      </div>
+      <div id="nvList"></div>
+    </div>
+  </div>
 </div>
 
 <div class="overlay" id="overlay">
@@ -279,13 +407,14 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let data = { bazars: [], calendarNotes: {} };
-let openBazarId = null;
+let data = { bazars: [], calendarNotes: {}, todos: [] };
+let currentMarketId = null;
 let lang = 'en';
 
 const STORAGE_KEY = 'dream_fabrics_data';
 const LANG_KEY = 'dream_fabrics_lang';
 const FIREBASE_CONFIG_KEY = 'dream_fabrics_firebase_config';
+const CURRENT_MARKET_KEY = 'dream_fabrics_current_market';
 
 let syncEnabled = false;
 let dbRef = null;
@@ -297,10 +426,12 @@ const STR = {
     exportBtn: '⬇ ব্যাকআপ ডাউনলোড করুন',
     importBtn: '⬆ ব্যাকআপ থেকে আনুন',
     searchPlaceholder: 'নাম, দোকান বা নম্বর খুঁজুন...',
-    addBazarBtn: '+ নতুন বাজার যোগ করুন',
-    emptyMain: 'এখনো কোনো বাজার যোগ করা হয়নি।',
-    emptyHint: '"+ নতুন বাজার যোগ করুন" দিয়ে শুরু করুন।',
-    countLabel: (nb, ns) => `${nb} বাজার • ${ns} দোকান`,
+    addBazarBtn: '+ নতুন মার্কেট যোগ করুন',
+    marketListTitle: 'মার্কেট সমূহ',
+    selectMarketBtn: '🏬 মার্কেট দেখুন',
+    emptyMain: 'এখনো কোনো মার্কেট যোগ করা হয়নি।',
+    emptyHint: '"+ নতুন মার্কেট যোগ করুন" দিয়ে শুরু করুন।',
+    countLabel: (nb, ns) => `${nb} মার্কেট • ${ns} দোকান`,
     noShops: 'কোনো দোকান নেই',
     addShopBtn: '+ দোকান যোগ করুন',
     nameNone: 'নাম নেই',
@@ -310,12 +441,13 @@ const STR = {
     editTitle: 'পরিবর্তন',
     deleteTitle: 'ডিলিট',
 
-    newBazarTitle: 'নতুন বাজার',
-    bazarNameLabel: 'বাজারের নাম',
+    newBazarTitle: 'নতুন মার্কেট',
+    bazarNameLabel: 'মার্কেটের নাম',
     bazarNamePh: 'যেমন: কারওয়ান বাজার',
     cancel: 'বাতিল',
+    back: '← পিছনে',
     add: 'যোগ করুন',
-    editBazarTitle: 'বাজারের নাম পরিবর্তন',
+    editBazarTitle: 'মার্কেটের নাম পরিবর্তন',
     save: 'সেভ করুন',
 
     newShopTitle: 'নতুন দোকান যোগ করুন',
@@ -334,14 +466,14 @@ const STR = {
     toastNoteSaved: 'নোট সেভ হয়েছে',
 
     confirmTitle: 'নিশ্চিত করুন',
-    confirmDeleteBazar: 'এই বাজার এবং এর সব দোকান ডিলিট হয়ে যাবে। নিশ্চিত?',
+    confirmDeleteBazar: 'এই মার্কেট এবং এর সব দোকান ডিলিট হয়ে যাবে। নিশ্চিত?',
     confirmDeleteShop: 'এই দোকানের তথ্য ডিলিট করবেন?',
     confirmImport: 'এই ব্যাকআপ ফাইলের ডাটা এখনকার সব ডাটার সাথে যুক্ত হবে। চালিয়ে যাবেন?',
     deleteBtn: 'ডিলিট করুন',
     continueBtn: 'চালিয়ে যান',
 
-    toastBazarAdded: 'বাজার যোগ হয়েছে',
-    toastBazarDeleted: 'বাজার ডিলিট হয়েছে',
+    toastBazarAdded: 'মার্কেট যোগ হয়েছে',
+    toastBazarDeleted: 'মার্কেট ডিলিট হয়েছে',
     toastShopAdded: 'দোকান যোগ হয়েছে',
     toastShopDeleted: 'দোকান ডিলিট হয়েছে',
     toastNeedName: 'অন্তত নাম দিন',
@@ -373,6 +505,8 @@ const STR = {
     importBtn: '⬆ Restore from backup',
     searchPlaceholder: 'Search by name, shop, or number...',
     addBazarBtn: '+ Add new market',
+    marketListTitle: 'Markets',
+    selectMarketBtn: '🏬 View markets',
     emptyMain: 'No markets added yet.',
     emptyHint: 'Start with "+ Add new market".',
     countLabel: (nb, ns) => `${nb} markets • ${ns} shops`,
@@ -389,6 +523,7 @@ const STR = {
     bazarNameLabel: 'Market name',
     bazarNamePh: 'e.g. Karwan Bazar',
     cancel: 'Cancel',
+    back: '← Back',
     add: 'Add',
     editBazarTitle: 'Edit market name',
     save: 'Save',
@@ -450,8 +585,7 @@ function applyStaticText(){
   document.title = lang === 'bn' ? 'Dream Fabrics — দোকান তালিকা' : 'Dream Fabrics — Shop Directory';
   document.getElementById('exportBtn').textContent = t('exportBtn');
   document.getElementById('importBtn').textContent = t('importBtn');
-  document.getElementById('searchInput').placeholder = t('searchPlaceholder');
-  document.getElementById('addBazarBtn').textContent = t('addBazarBtn');
+  document.getElementById('marketSelectBtnText').textContent = t('selectMarketBtn');
   document.getElementById('emptyState').innerHTML = `${t('emptyMain')}<br><b>${escapeHtml(t('addBazarBtn'))}</b> ${lang==='bn' ? 'দিয়ে শুরু করুন।' : ''} ${lang==='en' ? t('emptyHint') : ''}`;
   document.getElementById('langBn').classList.toggle('active', lang === 'bn');
   document.getElementById('langEn').classList.toggle('active', lang === 'en');
@@ -468,16 +602,18 @@ async function setLang(newLang){
 document.getElementById('langBn').addEventListener('click', () => setLang('bn'));
 document.getElementById('langEn').addEventListener('click', () => setLang('en'));
 
-function showConfirm(message, onYes, confirmLabel){
+function showConfirm(message, onYes, confirmLabel, onCancel){
+  modalBackFn = onCancel || null;
   openModal(`
     <h3>${escapeHtml(t('confirmTitle'))}</h3>
     <p class="confirm-msg">${escapeHtml(message)}</p>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn danger" id="confirmYesBtn">${escapeHtml(confirmLabel || t('deleteBtn'))}</button>
     </div>
   `);
   document.getElementById('confirmYesBtn').onclick = async () => {
+    modalBackFn = null;
     closeModal();
     await onYes();
   };
@@ -491,6 +627,10 @@ async function loadData(){
     if(langVal){ lang = langVal; }
   }catch(e){}
   try{
+    const cm = localStorage.getItem(CURRENT_MARKET_KEY);
+    if(cm){ currentMarketId = cm; }
+  }catch(e){}
+  try{
     const raw = localStorage.getItem(STORAGE_KEY);
     if(raw){
       data = JSON.parse(raw);
@@ -500,6 +640,7 @@ async function loadData(){
   }
   if(!data.calendarNotes) data.calendarNotes = {};
   if(!data.bazars) data.bazars = [];
+  if(!data.todos) data.todos = [];
   applyStaticText();
   render();
 
@@ -559,6 +700,7 @@ async function copyToClipboard(text){
 }
 
 function exportModal(){
+  pushNav(exportModal, 'export');
   const json = JSON.stringify(data, null, 2);
   openModal(`
     <h3>${escapeHtml(t('exportBtn'))}</h3>
@@ -567,7 +709,7 @@ function exportModal(){
       <textarea id="backupText" readonly style="min-height:220px;font-family:'DM Mono',monospace;font-size:11px;">${escapeHtml(json)}</textarea>
     </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn ghost" onclick="copyBackupText()">📋 ${lang==='bn'?'টেক্সট কপি করুন':'Copy text'}</button>
       <button class="btn primary" onclick="downloadBackupFile()">⬇ ${lang==='bn'?'ফাইল ডাউনলোড':'Download file'}</button>
     </div>
@@ -601,6 +743,7 @@ async function copyBackupText(){
 }
 
 function importModal(){
+  pushNav(importModal, 'import');
   openModal(`
     <h3>${escapeHtml(t('importBtn'))}</h3>
     <div class="field">
@@ -612,7 +755,7 @@ function importModal(){
       <textarea id="importText" placeholder="${escapeAttr(lang==='bn' ? 'এখানে ব্যাকআপ টেক্সট পেস্ট করুন...' : 'Paste backup text here...')}" style="min-height:160px;font-family:'DM Mono',monospace;font-size:11px;"></textarea>
     </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn primary" onclick="importFromText()">${lang==='bn'?'ইমপোর্ট করুন':'Import'}</button>
     </div>
   `);
@@ -738,6 +881,7 @@ function parseFirebaseConfigText(raw){
 }
 
 function syncSetupModal(){
+  pushNav(syncSetupModal, 'sync');
   const cfg = loadFirebaseConfig();
   openModal(`
     <h3>${escapeHtml(t('syncModalTitle'))}</h3>
@@ -748,7 +892,7 @@ function syncSetupModal(){
       <textarea id="fbConfigInput" placeholder="${escapeAttr(t('syncPlaceholder'))}" style="min-height:160px;font-family:'DM Mono',monospace;font-size:12px;">${cfg ? escapeHtml(JSON.stringify(cfg, null, 2)) : ''}</textarea>
     </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       ${syncEnabled ? `<button class="btn danger" onclick="disconnectSync()">${escapeHtml(t('syncDisconnectBtn'))}</button>` : ''}
       <button class="btn primary" id="syncConnectBtn">${escapeHtml(t('syncConnectBtn'))}</button>
     </div>
@@ -777,10 +921,45 @@ async function connectSync(){
 
 document.getElementById('syncBtn').addEventListener('click', syncSetupModal);
 
+let modalBackFn = null;
+let navigationStack = []; // Track modal history
+let isNavigatingBack = false; // Flag to prevent duplicate pushNav during back
+
+function pushNav(fn, label){
+  if(!isNavigatingBack){
+    navigationStack.push({ fn, label });
+  }
+}
+
+function openModalWithBack(html, backFn){
+  modalBackFn = backFn || null;
+  openModal(html);
+}
+
+function goBack(){
+  if(navigationStack.length > 0){
+    navigationStack.pop(); // Remove current
+    if(navigationStack.length > 0){
+      const prev = navigationStack[navigationStack.length - 1];
+      if(prev.fn){
+        isNavigatingBack = true;
+        prev.fn();
+        isNavigatingBack = false;
+        return;
+      }
+    }
+  }
+  const fn = modalBackFn;
+  modalBackFn = null;
+  if(fn){ fn(); } else { closeModal(); }
+}
+
 function openModal(html){
-  document.getElementById('modalContent').innerHTML = html;
-  document.getElementById('overlay').classList.add('show');
   const modal = document.getElementById('modalContent');
+  modal.innerHTML = html;
+  document.getElementById('overlay').classList.add('show');
+  const isCalModal = !!modal.querySelector('.cal-modal');
+  modal.classList.toggle('is-cal-modal', isCalModal);
   modal.querySelectorAll('input').forEach(inp => {
     inp.addEventListener('keydown', (e) => {
       if(e.key === 'Enter'){
@@ -798,18 +977,122 @@ document.getElementById('overlay').addEventListener('click', (e)=>{
   if(e.target.id === 'overlay') closeModal();
 });
 
-function addBazarModal(){
+function selectMarket(bazarId){
+  openMarketDetail(bazarId);
+}
+
+function openMarketDetail(bazarId){
+  pushNav(() => openMarketDetail(bazarId), 'marketDetail');
+  currentMarketId = bazarId;
+  try{ localStorage.setItem(CURRENT_MARKET_KEY, bazarId); }catch(e){}
+  render();
+  openModal(renderMarketDetailShell());
+  renderMarketDetailShopList();
+}
+
+function renderMarketDetailShell(){
+  const b = data.bazars.find(x=>x.id===currentMarketId);
+  if(!b) return '';
+  return `
+    <div class="cal-modal">
+      <div class="cal-head" style="padding-bottom:14px;">
+        <button class="cal-close" onclick="closeModal()">✕</button>
+        <h3 style="padding-right:34px;">${escapeHtml(b.name)} <span class="bazar-badge">${b.shops.length}</span></h3>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button class="icon-btn" style="border:1px solid var(--line);border-radius:8px;" onclick="marketListModal()" title="${escapeAttr(t('marketListTitle'))}">←</button>
+          <button class="icon-btn" style="border:1px solid var(--line);border-radius:8px;" onclick="editBazarModal('${b.id}')" title="${escapeAttr(t('editTitle'))}">✎</button>
+          <button class="icon-btn" style="border:1px solid var(--line);border-radius:8px;" onclick="deleteBazar('${b.id}')" title="${escapeAttr(t('deleteTitle'))}">🗑</button>
+        </div>
+      </div>
+      <div style="padding:14px 18px 0;">
+        <div class="searchbar" style="margin-bottom:0;">
+          <input id="shopSearchInput" placeholder="${escapeAttr(t('searchPlaceholder'))}" oninput="renderMarketDetailShopList()">
+        </div>
+      </div>
+      <div id="marketDetailShopList" style="max-height:48vh;overflow-y:auto;padding:14px 4px 0;"></div>
+      <div class="add-shop-row" style="padding:10px 18px 4px;">
+        <button class="add-shop-btn" onclick="addShopModal('${b.id}')">${escapeHtml(t('addShopBtn'))}</button>
+      </div>
+      <div style="height:8px;"></div>
+    </div>
+  `;
+}
+
+function renderMarketDetailShopList(){
+  const b = data.bazars.find(x=>x.id===currentMarketId);
+  const container = document.getElementById('marketDetailShopList');
+  if(!b || !container) return;
+  const qEl = document.getElementById('shopSearchInput');
+  const q = (qEl ? qEl.value : '').trim().toLowerCase();
+  let shops = b.shops;
+  if(q){
+    shops = shops.filter(s =>
+      (s.shopName||'').toLowerCase().includes(q) ||
+      (s.ownerName||'').toLowerCase().includes(q) ||
+      (s.phone||'').toLowerCase().includes(q)
+    );
+  }
+  const shopRows = shops.map(s => `
+    <div class="shop">
+      <div class="shop-info">
+        <div class="shop-name">${escapeHtml(s.shopName) || `<span style="color:var(--muted)">${escapeHtml(t('nameNone'))}</span>`}</div>
+        ${s.ownerName ? `<div class="shop-owner">${escapeHtml(t('ownerPrefix'))}${escapeHtml(s.ownerName)}</div>` : ''}
+        ${s.phone ? `<div class="shop-phone">${escapeHtml(s.phone)}</div>` : ''}
+        ${s.visitDate ? `<div class="shop-date">📅 ${escapeHtml(t('visitPrefix'))}${escapeHtml(formatVisitDate(s.visitDate))}</div>` : ''}
+        ${(()=>{ const days = Array.isArray(s.visitDays)&&s.visitDays.length ? s.visitDays : (s.visitDay!==null&&s.visitDay!==undefined?[Number(s.visitDay)]:[]);  const names=['রবি','সোম','মঙ্গল','বুধ','বৃহ','শুক্র','শনি']; return days.length ? `<div class="shop-date" style="color:var(--green);">🗓 ${days.map(d=>names[d]).join(', ')}</div>` : ''; })()}
+      </div>
+      <div class="shop-actions">
+        ${s.phone ? `<a class="pill-btn call" href="tel:${cleanPhone(s.phone)}" title="${escapeAttr(t('callTitle'))}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </a>` : ''}
+        ${s.phone ? `<a class="pill-btn wa" href="https://wa.me/${waNumber(s.phone)}" target="_blank" title="${escapeAttr(t('waTitle'))}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.94L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.53 3.69-8.22 8.24-8.22 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.53-3.69 8.2-8.24 8.2zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.78.97-.14.17-.29.18-.53.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.38.11-.51.12-.12.27-.31.41-.47.14-.16.18-.27.27-.45.09-.18.04-.34-.04-.47-.08-.13-.5-1.2-.69-1.65-.18-.43-.37-.37-.51-.38-.13-.01-.28-.01-.43-.01-.15 0-.39.06-.6.31-.21.25-.8.78-.8 1.9 0 1.12.82 2.2.93 2.35.11.15 1.55 2.37 3.76 3.23 1.86.73 2.24.59 2.65.55.41-.04 1.32-.54 1.51-1.06.18-.52.18-.96.13-1.06-.05-.1-.18-.16-.43-.28z"/></svg>
+        </a>` : ''}
+        <button class="pill-btn note ${(s.note && ((typeof s.note === 'string' && s.note) || (s.note.text) || (s.note.items && s.note.items.length > 0))) ? 'has-note' : ''}" onclick="noteModal('${b.id}','${s.id}')" title="${escapeAttr(t('noteTitle'))}">📝</button>
+        <button class="pill-btn edit" onclick="editShopModal('${b.id}','${s.id}')" title="${escapeAttr(t('editTitle'))}">✎</button>
+        <button class="pill-btn del" onclick="deleteShop('${b.id}','${s.id}')" title="${escapeAttr(t('deleteTitle'))}">🗑</button>
+      </div>
+    </div>
+  `).join('');
+  container.innerHTML = shopRows || `<div class="empty" style="padding:18px;">${escapeHtml(t('noShops'))}</div>`;
+}
+
+function marketListModal(){
+  pushNav(marketListModal, 'marketList');
+  const itemsHtml = data.bazars.map(b => `
+    <div class="market-list-item ${b.id===currentMarketId?'current':''}" onclick="selectMarket('${b.id}')">
+      <div class="market-list-name">
+        <span>${escapeHtml(b.name)}</span>
+        <span class="bazar-badge">${b.shops.length}</span>
+      </div>
+      <div class="market-list-actions">
+        <button class="icon-btn" onclick="event.stopPropagation(); editBazarModal('${b.id}')" title="${escapeAttr(t('editTitle'))}">✎</button>
+        <button class="icon-btn" onclick="event.stopPropagation(); deleteBazar('${b.id}')" title="${escapeAttr(t('deleteTitle'))}">🗑</button>
+      </div>
+    </div>
+  `).join('');
   openModal(`
+    <h3>${escapeHtml(t('marketListTitle'))}</h3>
+    <button class="add-bazar-btn" style="margin-bottom:16px;" onclick="addBazarModal()">${escapeHtml(t('addBazarBtn'))}</button>
+    <div style="max-height:360px;overflow-y:auto;">
+      ${itemsHtml || `<div class="empty" style="padding:20px;">${escapeHtml(t('emptyMain'))}</div>`}
+    </div>
+  `);
+}
+
+function addBazarModal(){
+  pushNav(addBazarModal, 'addBazar');
+  openModalWithBack(`
     <h3>${escapeHtml(t('newBazarTitle'))}</h3>
     <div class="field">
       <label>${escapeHtml(t('bazarNameLabel'))}</label>
       <input id="bazarNameInput" placeholder="${escapeAttr(t('bazarNamePh'))}" autofocus>
     </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn primary" onclick="saveBazar()">${escapeHtml(t('add'))}</button>
     </div>
-  `);
+  `, marketListModal);
 }
 
 async function saveBazar(){
@@ -817,27 +1100,26 @@ async function saveBazar(){
   if(!name){ showToast(t('toastNeedName')); return; }
   const id = uid();
   data.bazars.push({ id, name, shops: [] });
-  openBazarId = id;
   await saveData();
-  closeModal();
-  render();
   showToast(t('toastBazarAdded'));
+  openMarketDetail(id);
 }
 
-function editBazarModal(bazarId){
+function editBazarModal(bazarId, fromList){
+  pushNav(() => editBazarModal(bazarId, fromList), 'editBazar');
   const b = data.bazars.find(x=>x.id===bazarId);
   if(!b) return;
-  openModal(`
+  openModalWithBack(`
     <h3>${escapeHtml(t('editBazarTitle'))}</h3>
     <div class="field">
       <label>${escapeHtml(t('bazarNameLabel'))}</label>
       <input id="bazarNameInput" value="${escapeAttr(b.name)}" autofocus>
     </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn primary" onclick="updateBazar('${bazarId}')">${escapeHtml(t('save'))}</button>
     </div>
-  `);
+  `, fromList ? marketListModal : () => openMarketDetail(bazarId));
 }
 
 async function updateBazar(bazarId){
@@ -846,20 +1128,29 @@ async function updateBazar(bazarId){
   const b = data.bazars.find(x=>x.id===bazarId);
   b.name = name;
   await saveData();
-  closeModal();
   render();
+  openMarketDetail(bazarId);
 }
 
 async function deleteBazar(bazarId){
   showConfirm(t('confirmDeleteBazar'), async () => {
     data.bazars = data.bazars.filter(x=>x.id!==bazarId);
+    if(currentMarketId === bazarId){
+      currentMarketId = data.bazars.length ? data.bazars[0].id : null;
+      try{
+        if(currentMarketId) localStorage.setItem(CURRENT_MARKET_KEY, currentMarketId);
+        else localStorage.removeItem(CURRENT_MARKET_KEY);
+      }catch(e){}
+    }
     await saveData();
     render();
     showToast(t('toastBazarDeleted'));
+    if(data.bazars.length){ marketListModal(); } else { closeModal(); }
   });
 }
 
 function addShopModal(bazarId){
+  pushNav(() => addShopModal(bazarId), 'addShop');
   openModal(`
     <h3>${escapeHtml(t('newShopTitle'))}</h3>
     <div class="field">
@@ -878,11 +1169,25 @@ function addShopModal(bazarId){
       <label>${escapeHtml(t('visitDateLabel'))}</label>
       <input id="visitDateInput" type="date" value="${todayStr()}">
     </div>
+    <div class="field">
+      <label>${lang==='bn'?'সাপ্তাহিক ভিজিটের দিন (একাধিক বেছে নিন)':'Weekly visit days (select multiple)'}</label>
+      <div class="day-toggle-row">
+        ${['রবি','সোম','মঙ্গল','বুধ','বৃহ','শুক্র','শনি'].map((d,i)=>`<button type="button" class="day-toggle-btn${i===5?' fri':''}" data-day="${i}" onclick="toggleDayBtn(this)">${d}</button>`).join('')}
+      </div>
+    </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn primary" onclick="saveShop('${bazarId}')">${escapeHtml(t('add'))}</button>
     </div>
   `);
+}
+
+function toggleDayBtn(btn){
+  btn.classList.toggle('selected');
+}
+
+function getSelectedDays(){
+  return Array.from(document.querySelectorAll('.day-toggle-btn.selected')).map(b=>Number(b.dataset.day));
 }
 
 async function saveShop(bazarId){
@@ -890,16 +1195,17 @@ async function saveShop(bazarId){
   const ownerName = document.getElementById('ownerNameInput').value.trim();
   const phone = document.getElementById('phoneInput').value.trim();
   const visitDate = document.getElementById('visitDateInput').value;
+  const visitDays = getSelectedDays();
   if(!shopName && !ownerName){ showToast(t('toastNeedName')); return; }
   const b = data.bazars.find(x=>x.id===bazarId);
-  b.shops.push({ id: uid(), shopName, ownerName, phone, visitDate, createdAt: new Date().toISOString() });
+  b.shops.push({ id: uid(), shopName, ownerName, phone, visitDate, visitDays, visitDay: visitDays[0]??null, createdAt: new Date().toISOString() });
   await saveData();
-  closeModal();
-  render();
   showToast(t('toastShopAdded'));
+  openMarketDetail(bazarId);
 }
 
 function editShopModal(bazarId, shopId){
+  pushNav(() => editShopModal(bazarId, shopId), 'editShop');
   const b = data.bazars.find(x=>x.id===bazarId);
   const s = b.shops.find(x=>x.id===shopId);
   openModal(`
@@ -920,8 +1226,17 @@ function editShopModal(bazarId, shopId){
       <label>${escapeHtml(t('visitDateLabel'))}</label>
       <input id="visitDateInput" type="date" value="${escapeAttr(s.visitDate || todayStr())}">
     </div>
+    <div class="field">
+      <label>${lang==='bn'?'সাপ্তাহিক ভিজিটের দিন (একাধিক বেছে নিন)':'Weekly visit days (select multiple)'}</label>
+      <div class="day-toggle-row">
+        ${(()=>{
+          const days = Array.isArray(s.visitDays) ? s.visitDays : (s.visitDay!==null && s.visitDay!==undefined ? [Number(s.visitDay)] : []);
+          return ['রবি','সোম','মঙ্গল','বুধ','বৃহ','শুক্র','শনি'].map((d,i)=>`<button type="button" class="day-toggle-btn${i===5?' fri':''}${days.includes(i)?' selected':''}" data-day="${i}" onclick="toggleDayBtn(this)">${d}</button>`).join('');
+        })()}
+      </div>
+    </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn primary" onclick="updateShop('${bazarId}','${shopId}')">${escapeHtml(t('save'))}</button>
     </div>
   `);
@@ -934,9 +1249,11 @@ async function updateShop(bazarId, shopId){
   s.ownerName = document.getElementById('ownerNameInput').value.trim();
   s.phone = document.getElementById('phoneInput').value.trim();
   s.visitDate = document.getElementById('visitDateInput').value;
+  const visitDays = getSelectedDays();
+  s.visitDays = visitDays;
+  s.visitDay = visitDays[0]??null;
   await saveData();
-  closeModal();
-  render();
+  openMarketDetail(bazarId);
 }
 
 async function deleteShop(bazarId, shopId){
@@ -944,12 +1261,13 @@ async function deleteShop(bazarId, shopId){
     const b = data.bazars.find(x=>x.id===bazarId);
     b.shops = b.shops.filter(x=>x.id!==shopId);
     await saveData();
-    render();
     showToast(t('toastShopDeleted'));
+    openMarketDetail(bazarId);
   });
 }
 
-function noteModal(bazarId, shopId){
+function noteModal(bazarId, shopId, fromDayView){
+  pushNav(() => noteModal(bazarId, shopId, fromDayView), 'noteModal');
   const b = data.bazars.find(x=>x.id===bazarId);
   const s = b.shops.find(x=>x.id===shopId);
   
@@ -986,13 +1304,13 @@ function noteModal(bazarId, shopId){
     </div>
     
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">${escapeHtml(t('cancel'))}</button>
-      <button class="btn primary" onclick="saveNoteItems('${bazarId}','${shopId}')">${escapeHtml(t('save'))}</button>
+      <button class="btn ghost" onclick="${fromDayView ? 'closeModal()' : 'goBack()'}">${escapeHtml(t('back'))}</button>
+      <button class="btn primary" onclick="saveNoteItems('${bazarId}','${shopId}',${fromDayView?'true':'false'})">${escapeHtml(t('save'))}</button>
     </div>
   `);
 }
 
-async function saveNoteItems(bazarId, shopId){
+async function saveNoteItems(bazarId, shopId, fromDayView){
   const b = data.bazars.find(x=>x.id===bazarId);
   const s = b.shops.find(x=>x.id===shopId);
   
@@ -1014,9 +1332,12 @@ async function saveNoteItems(bazarId, shopId){
   
   s.note = { text: noteText, items };
   await saveData();
+  showToast(t('toastNoteSaved'));
   closeModal();
   render();
-  showToast(t('toastNoteSaved'));
+  renderDvList();
+  const nvBody = document.getElementById('nvBody');
+  if(nvBody && nvBody.classList.contains('open')) renderNoteView();
 }
 
 function addNoteItem(bazarId, shopId){
@@ -1051,6 +1372,7 @@ async function deleteNoteItem(bazarId, shopId, itemId){
 }
 
 function openCalendarNoteModal(calType, year, month, day){
+  pushNav(() => openCalendarNoteModal(calType, year, month, day), 'calendarNote');
   const dateKey = `${calType}_${year}_${month}_${day}`;
   const note = data.calendarNotes[dateKey] || '';
   const dateLabel = `${day}/${month}/${year}`;
@@ -1060,7 +1382,7 @@ function openCalendarNoteModal(calType, year, month, day){
       <textarea id="calNoteInput" placeholder="Add a note for this date...">${escapeHtml(note)}</textarea>
     </div>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn ghost" onclick="goBack()">${escapeHtml(t('back'))}</button>
       <button class="btn primary" onclick="saveCalendarNote('${dateKey}')">Save</button>
       ${note ? `<button class="btn danger" onclick="deleteCalendarNote('${dateKey}')">Delete</button>` : ''}
     </div>
@@ -1086,11 +1408,6 @@ async function deleteCalendarNote(dateKey){
   closeModal();
   renderCalendar();
   showToast('Calendar note deleted');
-}
-
-function toggleBazar(bazarId){
-  openBazarId = (openBazarId === bazarId) ? null : bazarId;
-  render();
 }
 
 function escapeHtml(str){
@@ -1223,6 +1540,7 @@ function initCalView(){
 }
 
 function openCalendar(){
+  pushNav(openCalendar, 'calendar');
   initCalView();
   calTab = 'greg';
   renderCalendar();
@@ -1264,7 +1582,9 @@ function renderCalendarHTML(){
 
 function switchCalTab(tabName){
   calTab = tabName;
-  document.getElementById('modalContent').innerHTML = renderCalendarHTML();
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = renderCalendarHTML();
+  modal.classList.add('is-cal-modal');
 }
 
 function navCal(dir){
@@ -1272,62 +1592,80 @@ function navCal(dir){
   v.month += dir;
   if(v.month > 12){ v.month = 1; v.year++; }
   if(v.month < 1){ v.month = 12; v.year--; }
-  document.getElementById('modalContent').innerHTML = renderCalendarHTML();
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML = renderCalendarHTML();
+  modal.classList.add('is-cal-modal');
 }
 
 function renderCalGrid(){
   const v = calView[calTab];
-  let monthLabel = '', startDate, monthLen, todayMatch = {};
-
   const today = new Date();
-  const todayJD = dateToJD(today);
+  const ty = today.getFullYear();
+  const tm = today.getMonth() + 1;
+  const td = today.getDate();
+
+  let monthLabel = '', startDate, monthLen, todayDay = 0, todayMonth = 0, todayYear = 0;
 
   if(calTab === 'greg'){
-    monthLabel = (lang==='bn' ? GREG_MONTHS_BN[v.month-1]+' '+toBnNum(v.year) : GREG_MONTHS_EN[v.month-1]+' '+v.year);
+    monthLabel = lang==='bn' ? GREG_MONTHS_BN[v.month-1]+' '+toBnNum(v.year) : GREG_MONTHS_EN[v.month-1]+' '+v.year;
     startDate = new Date(v.year, v.month-1, 1);
     monthLen = new Date(v.year, v.month, 0).getDate();
-    todayMatch = { year: today.getFullYear(), month: today.getMonth()+1, day: today.getDate() };
+    todayYear = ty; todayMonth = tm; todayDay = td;
   } else if(calTab === 'hijri'){
+    const todayJD = dateToJD(today);
     const jd1 = islamicToJD(v.year, v.month, 1);
     const g = jdToGregorian(jd1);
     startDate = new Date(g.year, g.month-1, g.day);
     monthLen = islamicMonthLength(v.year, v.month);
-    const hijriToday = jdToIslamic(todayJD);
-    monthLabel = lang==='bn' ? `${HIJRI_MONTHS_BN[v.month-1]} ${toBnNum(v.year)}` : `${HIJRI_MONTHS[v.month-1]} ${v.year}`;
-    todayMatch = { year: hijriToday.year, month: hijriToday.month, day: hijriToday.day };
+    monthLabel = lang==='bn' ? HIJRI_MONTHS_BN[v.month-1]+' '+toBnNum(v.year) : HIJRI_MONTHS[v.month-1]+' '+v.year;
+    const ht = jdToIslamic(todayJD);
+    todayYear = ht.year; todayMonth = ht.month; todayDay = ht.day;
   } else {
     const jd1 = banglaToGregorianJD(v.year, v.month, 1);
     const g = jdToGregorian(jd1);
     startDate = new Date(g.year, g.month-1, g.day);
     monthLen = banglaMonthLengths(v.year+593)[v.month-1];
-    const banglaToday = gregorianToBangla(today);
-    monthLabel = `${BANGLA_MONTHS[v.month-1]} ${toBnNum(v.year)}`;
-    todayMatch = { year: banglaToday.year, month: banglaToday.month, day: banglaToday.day };
+    monthLabel = BANGLA_MONTHS[v.month-1]+' '+toBnNum(v.year);
+    const bt = gregorianToBangla(today);
+    todayYear = bt.year; todayMonth = bt.month; todayDay = bt.day;
   }
 
+  const vy = Number(v.year);
+  const vm = Number(v.month);
   const startWeekday = startDate.getDay();
-  const cells = [];
-  for(let i=0;i<startWeekday;i++) cells.push('<div class="cal-cell empty"></div>');
+
+  let html = '';
+  for(let i=0; i<startWeekday; i++){
+    html += '<div class="cal-cell empty"></div>';
+  }
   for(let day=1; day<=monthLen; day++){
-    const isFri = ((startWeekday + day - 1) % 7) === 5;
-    const isToday = (v.year===todayMatch.year && v.month===todayMatch.month && day===todayMatch.day);
-    const label = (lang==='bn' || calTab==='bangla') ? toBnNum(day) : day;
-    const dateKey = `${calTab}_${v.year}_${v.month}_${day}`;
-    const hasNote = data.calendarNotes[dateKey] ? 'has-note' : '';
-    cells.push(`<div class="cal-cell ${isFri?'fri':''} ${isToday?'today':''} ${hasNote}" onclick="openCalendarNoteModal('${calTab}',${v.year},${v.month},${day})">${label}</div>`);
+    const col = (startWeekday + day - 1) % 7;
+    const isFri = (col === 5);
+    const isSat = (col === 6);
+    const isToday = (day === todayDay && vm === todayMonth && vy === todayYear);
+    const label = (lang==='bn' || calTab==='bangla') ? toBnNum(day) : String(day);
+    const dateKey = calTab+'_'+vy+'_'+vm+'_'+day;
+    const hasNote = data.calendarNotes[dateKey] ? true : false;
+    let cls = 'cal-cell';
+    if(isToday){ cls += ' today'; }
+    else if(isFri){ cls += ' fri'; }
+    else if(isSat){ cls += ' sat'; }
+    if(hasNote){ cls += ' has-note'; }
+    html += '<div class="'+cls+'" data-t="'+calTab+'" data-y="'+vy+'" data-m="'+vm+'" data-d="'+day+'">'+label+'</div>';
   }
 
-  const weekdayHtml = WEEKDAYS.map((w,i) => `<span class="${i===5?'fri':''}">${w}</span>`).join('');
+  const weekdayHtml = WEEKDAYS.map(function(w,i){
+    return '<span class="'+(i===5?'fri':i===6?'sat':'')+'">' + w + '</span>';
+  }).join('');
 
-  return `
-    <div class="cal-nav">
-      <button onclick="navCal(-1)">‹</button>
-      <span class="cal-month-label">${escapeHtml(monthLabel)}</span>
-      <button onclick="navCal(1)">›</button>
-    </div>
-    <div class="cal-weekdays">${weekdayHtml}</div>
-    <div class="cal-grid">${cells.join('')}</div>
-  `;
+  const navLabel = escapeHtml(monthLabel);
+  return '<div class="cal-nav"><button onclick="navCal(-1)">&#8249;</button><span class="cal-month-label">'+navLabel+'</span><button onclick="navCal(1)">&#8250;</button></div><div class="cal-weekdays">'+weekdayHtml+'</div><div class="cal-grid" id="calGrid" onclick="calGridClick(event)">'+html+'</div>';
+}
+
+function calGridClick(e){
+  const cell = e.target.closest('[data-t]');
+  if(!cell) return;
+  openCalendarNoteModal(cell.dataset.t, Number(cell.dataset.y), Number(cell.dataset.m), Number(cell.dataset.d));
 }
 
 function updateClock(){
@@ -1351,88 +1689,39 @@ function waNumber(p){
 }
 
 function render(){
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const container = document.getElementById('bazarContainer');
-  const empty = document.getElementById('emptyState');
-
-  // Ensure all bazars have shops array
   data.bazars.forEach(b => { if(!b.shops) b.shops = []; });
   let totalShops = 0;
   data.bazars.forEach(b => totalShops += b.shops.length);
   document.getElementById('totalCount').textContent =
     data.bazars.length ? t('countLabel')(data.bazars.length, totalShops) : '';
 
+  const empty = document.getElementById('emptyState');
+  empty.style.display = 'none';
   if(data.bazars.length === 0){
-    container.innerHTML = '';
-    empty.style.display = 'block';
+    currentMarketId = null;
+    try{ localStorage.removeItem(CURRENT_MARKET_KEY); }catch(e){}
+    document.getElementById('mainDvCard').style.display = 'block';
+    document.getElementById('dvTitle').textContent = lang==='bn' ? 'ডে ভিউ' : 'Day View';
+    document.getElementById('mainNvCard').style.display = 'block';
+    document.getElementById('nvTitle').textContent = lang==='bn' ? 'নোট ভিউ' : 'Note View';
+    initDayView();
     return;
   }
-  empty.style.display = 'none';
+  document.getElementById('mainDvCard').style.display = 'block';
+  document.getElementById('dvTitle').textContent = lang==='bn' ? 'ডে ভিউ' : 'Day View';
+  document.getElementById('mainNvCard').style.display = 'block';
+  document.getElementById('nvTitle').textContent = lang==='bn' ? 'নোট ভিউ' : 'Note View';
+  const nvIn = document.getElementById('nvSearchInput');
+  if(nvIn) nvIn.placeholder = lang==='bn' ? 'নোট খুঁজুন...' : 'Search notes...';
 
-  container.innerHTML = data.bazars.map(b => {
-    let shops = b.shops;
-    if(q){
-      shops = shops.filter(s =>
-        (s.shopName||'').toLowerCase().includes(q) ||
-        (s.ownerName||'').toLowerCase().includes(q) ||
-        (s.phone||'').toLowerCase().includes(q)
-      );
-    }
-    if(q && b.name.toLowerCase().includes(q)){
-      shops = b.shops;
-    }
-    if(q && shops.length === 0 && !b.name.toLowerCase().includes(q)) return '';
-
-    const isOpen = q ? true : (openBazarId === b.id);
-
-    const shopRows = shops.map(s => `
-      <div class="shop">
-        <div class="shop-info">
-          <div class="shop-name">${escapeHtml(s.shopName) || `<span style="color:var(--muted)">${escapeHtml(t('nameNone'))}</span>`}</div>
-          ${s.ownerName ? `<div class="shop-owner">${escapeHtml(t('ownerPrefix'))}${escapeHtml(s.ownerName)}</div>` : ''}
-          ${s.phone ? `<div class="shop-phone">${escapeHtml(s.phone)}</div>` : ''}
-          ${s.visitDate ? `<div class="shop-date">📅 ${escapeHtml(t('visitPrefix'))}${escapeHtml(formatVisitDate(s.visitDate))}</div>` : ''}
-        </div>
-        <div class="shop-actions">
-          ${s.phone ? `<a class="pill-btn call" href="tel:${cleanPhone(s.phone)}" title="${escapeAttr(t('callTitle'))}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          </a>` : ''}
-          ${s.phone ? `<a class="pill-btn wa" href="https://wa.me/${waNumber(s.phone)}" target="_blank" title="${escapeAttr(t('waTitle'))}">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.94L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.53 3.69-8.22 8.24-8.22 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.53-3.69 8.2-8.24 8.2zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.78.97-.14.17-.29.18-.53.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.38.11-.51.12-.12.27-.31.41-.47.14-.16.18-.27.27-.45.09-.18.04-.34-.04-.47-.08-.13-.5-1.2-.69-1.65-.18-.43-.37-.37-.51-.38-.13-.01-.28-.01-.43-.01-.15 0-.39.06-.6.31-.21.25-.8.78-.8 1.9 0 1.12.82 2.2.93 2.35.11.15 1.55 2.37 3.76 3.23 1.86.73 2.24.59 2.65.55.41-.04 1.32-.54 1.51-1.06.18-.52.18-.96.13-1.06-.05-.1-.18-.16-.43-.28z"/></svg>
-          </a>` : ''}
-          <button class="pill-btn note ${(s.note && ((typeof s.note === 'string' && s.note) || (s.note.text) || (s.note.items && s.note.items.length > 0))) ? 'has-note' : ''}" onclick="noteModal('${b.id}','${s.id}')" title="${escapeAttr(t('noteTitle'))}">📝</button>
-          <button class="pill-btn edit" onclick="editShopModal('${b.id}','${s.id}')" title="${escapeAttr(t('editTitle'))}">✎</button>
-          <button class="pill-btn del" onclick="deleteShop('${b.id}','${s.id}')" title="${escapeAttr(t('deleteTitle'))}">🗑</button>
-        </div>
-      </div>
-    `).join('');
-
-    return `
-      <div class="bazar ${isOpen ? 'open' : ''}">
-        <div class="bazar-head" onclick="toggleBazar('${b.id}')">
-          <div class="bazar-title">
-            <span class="chev">▶</span>
-            <span class="bazar-name">${escapeHtml(b.name)}</span>
-            <span class="bazar-badge">${b.shops.length}</span>
-          </div>
-          <div class="bazar-actions">
-            <button class="icon-btn" onclick="event.stopPropagation(); editBazarModal('${b.id}')" title="${escapeAttr(t('editTitle'))}">✎</button>
-            <button class="icon-btn" onclick="event.stopPropagation(); deleteBazar('${b.id}')" title="${escapeAttr(t('deleteTitle'))}">🗑</button>
-          </div>
-        </div>
-        <div class="shop-list">
-          ${shopRows || `<div class="empty" style="padding:18px;">${escapeHtml(t('noShops'))}</div>`}
-          <div class="add-shop-row">
-            <button class="add-shop-btn" onclick="addShopModal('${b.id}')">${escapeHtml(t('addShopBtn'))}</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  if(!currentMarketId || !data.bazars.find(x=>x.id===currentMarketId)){
+    currentMarketId = data.bazars[0].id;
+    try{ localStorage.setItem(CURRENT_MARKET_KEY, currentMarketId); }catch(e){}
+  }
+  initDayView();
 }
 
-document.getElementById('addBazarBtn').addEventListener('click', addBazarModal);
-document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('marketSelectBtn').addEventListener('click', marketListModal);
 
 document.getElementById('exportBtn').addEventListener('click', exportModal);
 document.getElementById('importBtn').addEventListener('click', importModal);
@@ -1454,6 +1743,209 @@ document.getElementById('importFile').addEventListener('change', (e) => {
 });
 
 loadData();
+
+// initDayView will be called after data loads via render()
+
+/* ===== TO-DO NOTE VIEW ===== */
+let nvFilter = 'all';
+
+function toggleNoteView(){
+  const body = document.getElementById('nvBody');
+  const chev = document.getElementById('nvChev');
+  const open = body.classList.toggle('open');
+  chev.textContent = open ? '▾' : '▸';
+  if(open) renderNoteView();
+}
+
+function renderNoteView(){
+  const el = document.getElementById('nvList');
+  if(!el) return;
+  if(!data.todos) data.todos = [];
+  const todos = data.todos;
+
+  if(todos.length === 0){
+    el.innerHTML = `<div class="nv-empty">${nvFilter==='done'?'কোনো সম্পন্ন কাজ নেই':nvFilter==='pending'?'কোনো বাকি কাজ নেই':'কোনো কাজ নেই — উপরে লিখুন!'}</div>`;
+    return;
+  }
+
+  el.innerHTML = todos.map(todo => `
+    <div class="nv-todo-item">
+      <div class="nv-todo-check${todo.done?' done':''}" onclick="nvToggleDone('${todo.id}')">${todo.done?'✓':''}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="nv-todo-text${todo.done?' done':''}" onclick="nvEditTodo('${todo.id}')">${escapeHtml(todo.text)}</div>
+        <div class="nv-todo-meta">${todo.createdAt ? formatAddedAt(todo.createdAt) : ''}</div>
+      </div>
+      <button class="nv-todo-del" onclick="nvDeleteTodo('${todo.id}')">🗑</button>
+    </div>
+  `).join('');
+}
+
+function nvQuickEnter(e){
+  if(e.key === 'Enter') nvQuickAdd();
+}
+
+async function nvQuickAdd(){
+  const inp = document.getElementById('nvQuickInput');
+  const text = (inp.value || '').trim();
+  if(!text) return;
+  if(!data.todos) data.todos = [];
+  data.todos.unshift({ id: uid(), text, done: false, createdAt: new Date().toISOString() });
+  inp.value = '';
+  await saveData();
+  renderNoteView();
+}
+
+async function nvToggleDone(todoId){
+  const todo = (data.todos||[]).find(t => t.id === todoId);
+  if(!todo) return;
+  todo.done = !todo.done;
+  await saveData();
+  renderNoteView();
+}
+
+function nvEditTodo(todoId){
+  const todo = (data.todos||[]).find(t => t.id === todoId);
+  if(!todo) return;
+  openModal(`
+    <h3>✏️ নোট সম্পাদনা</h3>
+    <div class="field">
+      <textarea id="nvEditInput" style="min-height:120px;">${escapeHtml(todo.text)}</textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">বাতিল</button>
+      <button class="btn primary" onclick="nvSaveEdit('${todoId}')">সেভ করুন</button>
+    </div>
+  `);
+}
+
+async function nvSaveEdit(todoId){
+  const todo = (data.todos||[]).find(t => t.id === todoId);
+  if(!todo) return;
+  const text = (document.getElementById('nvEditInput').value || '').trim();
+  if(!text){ showToast('কিছু লিখুন!'); return; }
+  todo.text = text;
+  await saveData();
+  closeModal();
+  renderNoteView();
+}
+
+async function nvDeleteTodo(todoId){
+  data.todos = (data.todos||[]).filter(t => t.id !== todoId);
+  await saveData();
+  renderNoteView();
+}
+
+const DV_DAYS_BN  = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+const DV_DAYS_SHORT_BN = ['রবি','সোম','মঙ্গল','বুধ','বৃহ','শুক্র','শনি'];
+const DV_DAYS_SHORT_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+let dvActiveDay = new Date().getDay();
+
+function toggleDayView(){
+  const body = document.getElementById('dvBody');
+  const chev = document.getElementById('dvChev');
+  const open = body.classList.toggle('open');
+  chev.textContent = open ? '▾' : '▸';
+}
+
+function initDayView(){
+  dvActiveDay = new Date().getDay();
+  const body = document.getElementById('dvBody');
+  // auto-open on load
+  body.classList.add('open');
+  const chev = document.getElementById('dvChev');
+  if(chev) chev.textContent = '▾';
+  renderDvTabs();
+  renderDvList();
+}
+
+function renderDvTabs(){
+  const bar = document.getElementById('dvTabsBar');
+  if(!bar) return;
+  const todayIdx = new Date().getDay();
+  const shorts = lang==='bn' ? DV_DAYS_SHORT_BN : DV_DAYS_SHORT_EN;
+  bar.innerHTML = shorts.map((name, i) => {
+    const isToday = i === todayIdx;
+    const isActive = i === dvActiveDay;
+    return `<button class="dv-tab${isActive?' active':''}${isToday?' today':''}" onclick="switchDvTab(${i})">${name}${isToday?' ●':''}</button>`;
+  }).join('');
+}
+
+function switchDvTab(idx){
+  const body = document.getElementById('dvBody');
+  const chev = document.getElementById('dvChev');
+  if(dvActiveDay === idx){
+    const open = body.classList.toggle('open');
+    if(chev) chev.textContent = open ? '▾' : '▸';
+  } else {
+    dvActiveDay = idx;
+    body.classList.add('open');
+    if(chev) chev.textContent = '▾';
+    renderDvList();
+  }
+  renderDvTabs();
+}
+
+function renderDvList(){
+  const el = document.getElementById('dvList');
+  if(!el) return;
+
+  // Collect shops from ALL markets that have this day
+  const shops = [];
+  (data.bazars||[]).forEach(b => {
+    b.shops.forEach(s => {
+      const days = Array.isArray(s.visitDays)&&s.visitDays.length
+        ? s.visitDays
+        : (s.visitDay!==null&&s.visitDay!==undefined ? [Number(s.visitDay)] : []);
+      if(days.includes(dvActiveDay)){
+        shops.push({ ...s, _bazarName: b.name });
+      }
+    });
+  });
+
+  if(shops.length===0){
+    el.innerHTML=`<div class="dv-empty">${lang==='bn'?'এই দিনে কোনো দোকান নেই':'No shops on this day'}</div>`;
+    return;
+  }
+
+  el.innerHTML = '<div class="dv-list">'+shops.map(s=>{
+    const note = typeof s.note === 'string'
+      ? { text: s.note, items: [] }
+      : (s.note || { text: '', items: [] });
+    const hasText = note.text && note.text.trim();
+    const hasItems = note.items && note.items.length > 0;
+    const hasNote = hasText || hasItems;
+
+    const notePreview = hasText
+      ? `<div class="dv-item-note">${escapeHtml(note.text.length>80 ? note.text.slice(0,80)+'…' : note.text)}</div>` : '';
+    const checkPreview = hasItems
+      ? `<div class="dv-item-checklist">${note.items.slice(0,3).map(it=>`
+          <div class="dv-check-row${it.done?' done':''}">
+            <span class="dv-check-dot${it.done?' done':''}">${it.done?'✓':'○'}</span>
+            <span>${escapeHtml(it.text)}</span>
+          </div>`).join('')}${note.items.length>3?`<div style="color:var(--muted);font-size:10px;margin-top:2px;">+${note.items.length-3} more</div>`:''}</div>` : '';
+
+    // Find bazarId for this shop
+    const bazar = (data.bazars||[]).find(b=>b.shops.some(x=>x.id===s.id));
+    const bazarId = bazar ? bazar.id : '';
+
+    return `
+    <div class="dv-item">
+      <div class="dv-item-info" style="min-width:0;">
+        <div class="dv-item-name">${escapeHtml(s.shopName||s.ownerName||'—')}</div>
+        ${s.ownerName&&s.shopName?`<div class="dv-item-sub">${escapeHtml(t('ownerPrefix'))}${escapeHtml(s.ownerName)}</div>`:''}
+        <div class="dv-item-sub" style="color:var(--gold);opacity:.8;">🏬 ${escapeHtml(s._bazarName)}</div>
+        ${s.phone?`<div class="dv-item-phone">${escapeHtml(s.phone)}</div>`:''}
+      </div>
+      <div class="dv-item-actions">
+        ${s.phone?`<a class="pill-btn call" href="tel:${cleanPhone(s.phone)}" style="width:30px;height:30px;font-size:13px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>`:''}
+        ${s.phone?`<a class="pill-btn wa" href="https://wa.me/${waNumber(s.phone)}" target="_blank" style="width:30px;height:30px;font-size:13px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.94L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.53 3.69-8.22 8.24-8.22 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.42 5.82c0 4.53-3.69 8.2-8.24 8.2zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.78.97-.14.17-.29.18-.53.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.38.11-.51.12-.12.27-.31.41-.47.14-.16.18-.27.27-.45.09-.18.04-.34-.04-.47-.08-.13-.5-1.2-.69-1.65-.18-.43-.37-.37-.51-.38-.13-.01-.28-.01-.43-.01-.15 0-.39.06-.6.31-.21.25-.8.78-.8 1.9 0 1.12.82 2.2.93 2.35.11.15 1.55 2.37 3.76 3.23 1.86.73 2.24.59 2.65.55.41-.04 1.32-.54 1.51-1.06.18-.52.18-.96.13-1.06-.05-.1-.18-.16-.43-.28z"/></svg></a>`:''}
+        ${bazarId?`<button class="pill-btn note${hasNote?' has-note':''}" onclick="noteModal('${bazarId}','${s.id}',true)" style="width:30px;height:30px;font-size:13px;">📝</button>`:''}
+      </div>
+    </div>
+  `}).join('')+'</div>';
+}
+
 </script>
 </body>
 </html>
